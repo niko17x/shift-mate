@@ -1,4 +1,4 @@
-import MyCalendar from "./modules/calendar/components/calendarUI";
+import MyCalendar from "./modules/calendarModule/components/calendarUI";
 
 const App = () => {
   return (

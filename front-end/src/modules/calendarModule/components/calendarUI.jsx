@@ -10,9 +10,13 @@ const MyCalendar = () => {
     // result => _DateTime {ts: 1718953200000, _zone: _SystemZone, loc: _Locale, invalid: null, weekData: null, …}:
     const luxonDate = DateTime.fromJSDate(selectedDate);
 
-    // result => 6/29/2024:
+    // result => 6-29-2024:
     console.log(
-      `Selected date: ${luxonDate.toLocaleString(DateTime.DATE_MED)}`
+      // `Selected date: ${luxonDate.toLocaleString(DateTime.DATE_MED)}`
+      // `Selected date: ${luxonDate.toLocaleString(DateTime.toISODate())}`
+
+      // correct format to receive in schedule.controller model:
+      `${luxonDate.toISODate()}`
     );
     setDate(selectedDate);
   };
