@@ -152,3 +152,19 @@ export const users = asyncHandler(async (req, res) => {
 
   res.status(200).json({ users });
 });
+
+export const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return res.status(404).json({
+      message: "Failed to retrieve user",
+    });
+  }
+
+  await user.deleteOne();
+
+  res.status(200).json({
+    message: "User deleted successfully",
+  });
+});

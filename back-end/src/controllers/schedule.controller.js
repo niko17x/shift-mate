@@ -84,9 +84,9 @@ export const scheduledEmployees = asyncHandler(async (req, res) => {
     },
   });
 
-  if (!schedules) {
-    return res.status(400).json({
-      message: "Failed to retrieve scheduled employee",
+  if (schedules.length === 0) {
+    return res.status(404).json({
+      message: "No schedules found for the specified year and week number",
     });
   }
 
