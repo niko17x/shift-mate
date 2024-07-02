@@ -6,6 +6,7 @@ import db from "./config/db.js";
 import cookieParser from "cookie-parser";
 dotenv.config();
 import userRoute from "../src/routes/user.route.js";
+import scheduleRoute from "../src/routes/schedule.route.js";
 
 // connect mongoDB
 db();
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/user", userRoute);
+app.use("/api/schedule", scheduleRoute);
 
 app.listen(process.env.SERVER_PORT, () => {
   console.log(`Server initiated on port ${server_port}`);

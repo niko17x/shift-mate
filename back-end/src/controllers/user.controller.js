@@ -7,11 +7,12 @@ export const registerUser = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     username,
+    password,
     jobTitle,
     isFullTimeEmp,
     tenure,
     eCode,
-    admin,
+    isAdmin,
   } = req.body;
 
   const userExists = await User.findOne({ username });
@@ -26,11 +27,12 @@ export const registerUser = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     username,
+    password,
     jobTitle,
     isFullTimeEmp,
     tenure,
     eCode,
-    admin,
+    isAdmin,
   });
 
   if (newUser) {
@@ -47,7 +49,8 @@ export const registerUser = asyncHandler(async (req, res) => {
         isFullTimeEmp: newUser.isFullTimeEmp,
         tenure: newUser.tenure,
         eCode: newUser.eCode,
-        admin: true,
+        isAdmin: true,
+        // password: newUser.password,
       },
     });
   } else {
@@ -58,9 +61,94 @@ export const registerUser = asyncHandler(async (req, res) => {
 });
 
 export const loginUser = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: "hello" });
+  const { username, password } = req.body;
+
+  const user = await User.findOne({ username });
+
+  if (user && (await user.matchPassword(password))) {
+    const token = generateToken(res, user._id);
+
+    res.status(201).json({
+      token,
+      message: "Login successfull",
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        jobTitle: user.jobTitle,
+        isFullTimeEmp: user.isFullTimeEmp,
+        tenure: user.tenure,
+        eCode: user.eCode,
+      },
+    });
+  } else {
+    res.status(400).json({ message: "Invalid credentials" });
+  }
 });
 
-export const logoutUser = asyncHandler(async (req, res) => {});
+export const logoutUser = asyncHandler(async (req, res) => {
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(1),
+  });
 
-export const getUserProfile = asyncHandler(async (req, res) => {});
+  res.status(200).json({
+    message: "Logged out successfully",
+  });
+});
+
+export const userProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select("-password");
+
+  if (!user) {
+    res.status(400).json({
+      message: "Failed to retrieve user profile",
+    });
+  }
+
+  res.status(200).json({ message: "User profile succesfully loaded", user });
+});
+
+export const updateProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    res.status(400).json({ message: "Failed to retrieve user profile" });
+  }
+
+  user.firstName = req.body.firstName || user.firstName;
+  user.lastName = req.body.lastName || user.lastName;
+  user.username = req.body.username || user.username;
+  user.jobTitle = req.body.jobTitle || user.jobTitle;
+  user.isFullTimeEmp = req.body.isFullTimeEmp || user.isFullTimeEmp;
+  user.tenure = req.body.tenure || user.tenure;
+
+  if (req.body.password) {
+    user.password = req.body.password;
+  }
+
+  const updatedUser = await user.save();
+
+  res.status(200).json({
+    message: "Updated profile successfully",
+    _id: updatedUser._id,
+    firstName: updatedUser.firstName,
+    lastName: updatedUser.lastName,
+    username: updatedUser.username,
+    jobTitle: updatedUser.jobTitle,
+    isFullTimeEmp: updatedUser.isFullTimeEmp,
+    tenure: updatedUser.tenure,
+  });
+});
+
+export const users = asyncHandler(async (req, res) => {
+  const users = await User.find();
+
+  if (!users) {
+    res.status(400).json({
+      message: "Failed to retrieve users",
+    });
+  }
+
+  res.status(200).json({ users });
+});
