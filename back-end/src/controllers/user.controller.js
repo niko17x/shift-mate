@@ -168,3 +168,58 @@ export const deleteUser = asyncHandler(async (req, res) => {
     message: "User deleted successfully",
   });
 });
+
+// TODO:
+// admin create new user/employee w/o authentication
+export const createUser = asyncHandler(async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    username,
+    password,
+    jobTitle,
+    isFullTimeEmp,
+    tenure,
+    eCode,
+    isAdmin,
+  } = req.body;
+
+  const userExists = await User.findOne({ eCode });
+
+  if (userExists) {
+    return res.status(400).json({
+      message: "Failed to create user - eCode already exists",
+    });
+  }
+
+  const newUser = await User.create({
+    firstName,
+    lastName,
+    username,
+    password,
+    jobTitle,
+    isFullTimeEmp,
+    tenure,
+    eCode,
+    isAdmin,
+  });
+
+  if (newUser) {
+    return res.status(200).json({
+      message: "User created successfully",
+      id: newUser._id,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      username: newUser.username,
+      jobTitle: newUser.jobTitle,
+      isFullTimeEmp: newUser.isFullTimeEmp,
+      tenure: newUser.tenure,
+      eCode: newUser.eCode,
+      isAdmin: newUser.isAdmin,
+    });
+  } else {
+    res.status(400).json({
+      message: "Failed to create user",
+    });
+  }
+});

@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 import userRoute from "../src/routes/user.route.js";
 import scheduleRoute from "../src/routes/schedule.route.js";
+import { errorHandler, notFound } from "./middlewares/error.middleware.js";
 
 // connect mongoDB
 db();
@@ -22,6 +23,9 @@ app.use(cookieParser());
 
 app.use("/api/user", userRoute);
 app.use("/api/schedule", scheduleRoute);
+
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(process.env.SERVER_PORT, () => {
   console.log(`Server initiated on port ${server_port}`);
