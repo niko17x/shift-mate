@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const schedule = mongoose.Schema(
+const scheduleSchema = mongoose.Schema(
   {
     employee: {
       type: mongoose.Schema.Types.ObjectId,
@@ -37,6 +37,6 @@ const schedule = mongoose.Schema(
   }
 );
 
-const Schedule = mongoose.model("Schedule", schedule);
+const Schedule = mongoose.model("Schedule", scheduleSchema);
 
 export default Schedule;

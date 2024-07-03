@@ -223,3 +223,5 @@ export const createUser = asyncHandler(async (req, res) => {
     });
   }
 });
+
+// view: toggle side bar

@@ -92,3 +92,10 @@ export const scheduledEmployees = asyncHandler(async (req, res) => {
 
   res.status(200).json({ schedules });
 });
+
+/**
+ * Storing calendar dates for display for rendering in client:
+ * function displayDates()
+ * client side function takes weekNum || date (ex: 2024-12-12) & provides 7 days to server to store in DB
+ *
+ */
