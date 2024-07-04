@@ -7,6 +7,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     username,
+    email,
     password,
     jobTitle,
     isFullTimeEmp,
@@ -28,6 +29,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     username,
+    email,
     password,
     jobTitle,
     isFullTimeEmp,
@@ -47,6 +49,7 @@ export const registerUser = asyncHandler(async (req, res) => {
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         username: newUser.username,
+        email: newUser.email,
         jobTitle: newUser.jobTitle,
         isFullTimeEmp: newUser.isFullTimeEmp,
         tenure: newUser.tenure,
@@ -78,6 +81,8 @@ export const loginUser = asyncHandler(async (req, res) => {
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
+        username: user.username,
+        email: user.email,
         jobTitle: user.jobTitle,
         isFullTimeEmp: user.isFullTimeEmp,
         tenure: user.tenure,
@@ -122,6 +127,9 @@ export const updateProfile = asyncHandler(async (req, res) => {
   user.firstName = req.body.firstName || user.firstName;
   user.lastName = req.body.lastName || user.lastName;
   user.username = req.body.username || user.username;
+  user.email = req.body.email || user.email;
+  // Disable ecode edit unless admin status true:
+  user.ecode = user.eCode;
   user.jobTitle = req.body.jobTitle || user.jobTitle;
   user.isFullTimeEmp = req.body.isFullTimeEmp || user.isFullTimeEmp;
   user.tenure = req.body.tenure || user.tenure;
@@ -178,6 +186,7 @@ export const createUser = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     username,
+    email,
     password,
     jobTitle,
     isFullTimeEmp,
@@ -198,6 +207,7 @@ export const createUser = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     username,
+    email,
     password,
     jobTitle,
     isFullTimeEmp,
@@ -213,6 +223,7 @@ export const createUser = asyncHandler(async (req, res) => {
       firstName: newUser.firstName,
       lastName: newUser.lastName,
       username: newUser.username,
+      email: newUser.email,
       jobTitle: newUser.jobTitle,
       isFullTimeEmp: newUser.isFullTimeEmp,
       tenure: newUser.tenure,
