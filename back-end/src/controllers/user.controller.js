@@ -13,6 +13,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     tenure,
     eCode,
     isAdmin,
+    weekNum,
   } = req.body;
 
   const userExists = await User.findOne({ username });
@@ -33,6 +34,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     tenure,
     eCode,
     isAdmin,
+    weekNum,
   });
 
   if (newUser) {
@@ -50,6 +52,7 @@ export const registerUser = asyncHandler(async (req, res) => {
         tenure: newUser.tenure,
         eCode: newUser.eCode,
         isAdmin: true,
+        weekNum: newUser.weekNum,
         // password: newUser.password,
       },
     });
@@ -169,7 +172,6 @@ export const deleteUser = asyncHandler(async (req, res) => {
   });
 });
 
-// TODO:
 // admin create new user/employee w/o authentication
 export const createUser = asyncHandler(async (req, res) => {
   const {
@@ -224,4 +226,27 @@ export const createUser = asyncHandler(async (req, res) => {
   }
 });
 
-// view: toggle side bar
+export const updateWeekNum = asyncHandler(async (req, res) => {
+  const { weekNum, currentUserId } = req.body;
+
+  if (!weekNum || !currentUserId) {
+    return res.status(400).json({
+      message: "Failed to udpate week number for current user",
+    });
+  }
+
+  const user = await User.findById(currentUserId);
+
+  if (!user) {
+    return res.status(400).json({
+      message: "Failed to update week number - current user ID not found",
+    });
+  } else {
+    user.weekNum = weekNum;
+    await user.save();
+  }
+
+  res.status(200).json({
+    message: "Updated week number for current user successfully",
+  });
+});

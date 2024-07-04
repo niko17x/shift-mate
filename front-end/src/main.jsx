@@ -13,6 +13,8 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<App />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
     </>
   )
 );
@@ -24,8 +26,9 @@ if (rootElement) {
 
   root.render(
     <React.StrictMode>
-      <RouterProvider router={router} />
       {/* Context providers go here */}
+      <RouterProvider router={router} />
+      <ToastContainer position="bottom-left" />
     </React.StrictMode>
   );
 }

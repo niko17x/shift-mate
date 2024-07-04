@@ -36,6 +36,10 @@ const userSchema = mongoose.Schema(
     },
     isAdmin: {
       type: Boolean,
+      require: true,
+    },
+    weekNum: {
+      type: Number,
     },
   },
   { timestamps: true }
