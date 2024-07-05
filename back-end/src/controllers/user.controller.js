@@ -50,8 +50,8 @@ export const registerUser = asyncHandler(async (req, res) => {
     isFullTime,
     tenure,
     eCode,
-    isAdmin,
-    weekNum,
+    isAdmin: isAdmin || false,
+    weekNum: weekNum || null,
   });
 
   if (newUser) {

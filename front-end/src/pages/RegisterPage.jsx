@@ -11,7 +11,6 @@ const RegisterPage = () => {
     jobTitle: "",
     isFullTime: "",
     tenure: "",
-    notes: "",
     eCode: "",
   });
 
@@ -21,21 +20,32 @@ const RegisterPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    formData.isFullTime === "Full Time"
-      ? (formData.isFullTime = true)
-      : (formData.isFullTime = false);
+    const modifiedFormData = {
+      ...formData,
+      isFullTime: formData.isFullTime === "Full Time",
+    };
 
-    registerUser(formData);
+    await registerUser(modifiedFormData);
+
+    setFormData({
+      firstName: "",
+      lastName: "",
+      username: "",
+      email: "",
+      password: "",
+      jobTitle: "",
+      isFullTime: "",
+      tenure: "",
+      eCode: "",
+    });
   };
 
   const handleInputErrors = (field) => {
     const errorFound = errors?.find((err) => err.field === field);
-    if (errorFound) {
-      return "is-warning";
-    }
+    return errorFound ? "is-warning" : "";
   };
 
   return (
@@ -51,6 +61,7 @@ const RegisterPage = () => {
               type="text"
               placeholder="John"
               name="firstName"
+              required={true}
               value={formData.firstName}
               onChange={handleFormData}
             ></input>
@@ -65,6 +76,7 @@ const RegisterPage = () => {
               type="text"
               placeholder="Doe"
               name="lastName"
+              required={true}
               value={formData.lastName}
               onChange={handleFormData}
             ></input>
@@ -79,6 +91,7 @@ const RegisterPage = () => {
               type="text"
               placeholder="johnDoe01"
               name="username"
+              required={true}
               value={formData.username}
               onChange={handleFormData}
             ></input>
@@ -96,6 +109,7 @@ const RegisterPage = () => {
               type="email"
               placeholder="john_doe@email.com"
               name="email"
+              required={true}
               value={formData.email}
               onChange={handleFormData}
             ></input>
@@ -109,11 +123,6 @@ const RegisterPage = () => {
               <p className="help is-warning">Email already taken</p>
             )}
           </div>
-          {/* {emailExist ? (
-          <p className="help is-danger">This email is invalid</p>
-        ) : (
-          <p className="help is-success">Email is available</p>
-        )} */}
         </div>
 
         <div className="field">
@@ -125,6 +134,7 @@ const RegisterPage = () => {
               placeholder="Password"
               name="password"
               minLength="5"
+              required={true}
               value={formData.password}
               onChange={handleFormData}
             ></input>
@@ -139,6 +149,7 @@ const RegisterPage = () => {
               type="text"
               placeholder="Software Engineer"
               name="jobTitle"
+              required={true}
               value={formData.jobTitle}
               onChange={handleFormData}
             ></input>
@@ -153,6 +164,7 @@ const RegisterPage = () => {
               type="number"
               placeholder="10"
               name="tenure"
+              required={true}
               value={formData.tenure}
               onChange={handleFormData}
             ></input>
@@ -167,6 +179,7 @@ const RegisterPage = () => {
               type="text"
               placeholder="E010J"
               name="eCode"
+              required={true}
               value={formData.eCode}
               onChange={handleFormData}
             ></input>
@@ -185,24 +198,11 @@ const RegisterPage = () => {
                 value={formData.isFullTime}
                 onChange={handleFormData}
               >
-                <option>Select dropdown</option>
+                {/* <option>Select dropdown</option> */}
                 <option>Full Time</option>
                 <option>Part Time</option>
               </select>
             </div>
-          </div>
-        </div>
-
-        <div className="field">
-          <label className="label">Notes</label>
-          <div className="control">
-            <textarea
-              className="textarea"
-              placeholder="Textarea"
-              name="notes"
-              value={formData.notes}
-              onChange={handleFormData}
-            ></textarea>
           </div>
         </div>
 

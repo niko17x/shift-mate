@@ -2,9 +2,11 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 const useRegisterUser = () => {
-  const [errors, setErrors] = useState(null);
+  const [errors, setErrors] = useState([]);
 
   const registerUser = async (formData) => {
+    console.log(JSON.stringify(formData));
+    setErrors([]);
     try {
       const response = await fetch("/api/user/register", {
         method: "POST",
@@ -17,7 +19,6 @@ const useRegisterUser = () => {
       if (!response.ok) {
         const errorData = await response.json();
 
-        // setErrors({ [errorData.field.field]: errorData.message });
         setErrors(errorData.errors);
       } else {
         toast.success("Registration successful!", {
