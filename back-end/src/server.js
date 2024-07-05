@@ -8,6 +8,7 @@ dotenv.config();
 import userRoute from "../src/routes/user.route.js";
 import scheduleRoute from "../src/routes/schedule.route.js";
 import { errorHandler, notFound } from "./middlewares/error.middleware.js";
+import cors from "cors";
 
 // connect mongoDB
 db();
@@ -15,6 +16,8 @@ db();
 const app = express();
 
 const server_port = process.env.SERVER_PORT || 5000;
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
