@@ -10,19 +10,34 @@ export const registerUser = asyncHandler(async (req, res) => {
     email,
     password,
     jobTitle,
-    isFullTimeEmp,
+    isFullTime,
     tenure,
     eCode,
     isAdmin,
     weekNum,
   } = req.body;
 
-  const userExists = await User.findOne({ username });
+  const errors = [];
 
-  if (userExists) {
-    return res.status(400).json({
-      message: "Username is already exists",
-    });
+  const emailExists = await User.findOne({ email });
+  if (emailExists) {
+    // "field" property allows which input has error:
+    errors.push({ field: "email", message: "Email already exists" });
+  }
+
+  const usernameExists = await User.findOne({ username });
+  if (usernameExists) {
+    errors.push({ field: "username", message: "Username already exists" });
+  }
+
+  const eCodeExists = await User.findOne({ eCode });
+  if (eCodeExists) {
+    errors.push({ field: "eCode", message: "Ecode already exists" });
+  }
+
+  if (errors.length > 0) {
+    console.log(errors);
+    return res.status(400).json({ errors });
   }
 
   const newUser = await User.create({
@@ -32,7 +47,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     email,
     password,
     jobTitle,
-    isFullTimeEmp,
+    isFullTime,
     tenure,
     eCode,
     isAdmin,
@@ -51,7 +66,7 @@ export const registerUser = asyncHandler(async (req, res) => {
         username: newUser.username,
         email: newUser.email,
         jobTitle: newUser.jobTitle,
-        isFullTimeEmp: newUser.isFullTimeEmp,
+        isFullTime: newUser.isFullTime,
         tenure: newUser.tenure,
         eCode: newUser.eCode,
         isAdmin: true,
@@ -128,8 +143,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
   user.lastName = req.body.lastName || user.lastName;
   user.username = req.body.username || user.username;
   user.email = req.body.email || user.email;
-  // Disable ecode edit unless admin status true:
-  user.ecode = user.eCode;
+  user.eCode = req.body.eCode || user.eCode;
   user.jobTitle = req.body.jobTitle || user.jobTitle;
   user.isFullTimeEmp = req.body.isFullTimeEmp || user.isFullTimeEmp;
   user.tenure = req.body.tenure || user.tenure;
@@ -146,6 +160,8 @@ export const updateProfile = asyncHandler(async (req, res) => {
     firstName: updatedUser.firstName,
     lastName: updatedUser.lastName,
     username: updatedUser.username,
+    email: updatedUser.email,
+    eCode: updatedUser.eCode,
     jobTitle: updatedUser.jobTitle,
     isFullTimeEmp: updatedUser.isFullTimeEmp,
     tenure: updatedUser.tenure,

@@ -6,31 +6,31 @@ const userSchema = mongoose.Schema(
     // profilePic: {},
     firstName: {
       type: String,
-      required: true,
+      // required: true,
     },
     lastName: {
       type: String,
-      required: true,
+      // required: true,
     },
     username: {
       type: String,
-      required: true,
+      // required: true,
     },
     email: {
       type: String,
-      required: true,
+      // required: true,
     },
     password: {
       type: String,
-      required: true,
+      // required: true,
     },
     jobTitle: {
       type: String,
-      required: true,
+      // required: true,
     },
-    isFullTimeEmp: {
+    isFullTime: {
       type: Boolean,
-      required: true,
+      // required: true,
     },
     tenure: {
       type: Number,
@@ -40,7 +40,7 @@ const userSchema = mongoose.Schema(
     },
     isAdmin: {
       type: Boolean,
-      require: true,
+      // required: true,
     },
     weekNum: {
       type: Number,
