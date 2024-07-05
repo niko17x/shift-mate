@@ -68,10 +68,10 @@ export const Navbar = () => {
           <div className="navbar-end">
             <div className="navbar-item">
               <div className="buttons">
-                <a className="button is-primary">
+                <Link className="button is-primary" to={"/register"}>
                   <strong>Sign up</strong>
-                </a>
-                <a className="button is-light">Log in</a>
+                </Link>
+                <Link className="button is-light">Log in</Link>
               </div>
             </div>
           </div>
