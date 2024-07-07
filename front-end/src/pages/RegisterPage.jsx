@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 import useRegisterUser from "../hooks/auth/useRegisterUser";
+import usePasswordValidation from "../hooks/auth/usePasswordValidation";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +10,7 @@ const RegisterPage = () => {
     username: "",
     email: "",
     password: "",
+    confirmPassword: "",
     jobTitle: "",
     isFullTime: "",
     tenure: "",
@@ -15,72 +18,95 @@ const RegisterPage = () => {
   });
 
   const { registerUser, errors } = useRegisterUser();
+  const { validatePasswords, isPasswordsValid } =
+    usePasswordValidation(formData);
 
   const handleFormData = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: name === "isFullTime" ? value === "Full Time" : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const modifiedFormData = {
-      ...formData,
-      isFullTime: formData.isFullTime === "Full Time",
-    };
+    if (!validatePasswords()) {
+      return;
+    }
 
-    await registerUser(modifiedFormData);
+    try {
+      const modifiedFormData = {
+        ...formData,
+        isFullTime: formData.isFullTime === "Full Time",
+      };
 
-    setFormData({
-      firstName: "",
-      lastName: "",
-      username: "",
-      email: "",
-      password: "",
-      jobTitle: "",
-      isFullTime: "",
-      tenure: "",
-      eCode: "",
-    });
+      await registerUser(modifiedFormData);
+
+      setFormData({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        jobTitle: "",
+        isFullTime: "",
+        tenure: "",
+        eCode: "",
+      });
+    } catch (error) {
+      console.log(error.message);
+      toast.error("Failed to register user", {
+        toastId: "handle-submit-fail",
+      });
+    }
   };
 
   const handleInputErrors = (field) => {
     const errorFound = errors?.find((err) => err.field === field);
-    return errorFound ? "is-warning" : "";
+    return errorFound ? "is-danger" : "";
+  };
+
+  const getErrorMessage = (field) => {
+    const error = errors?.find((err) => err.field === field);
+    return error ? error.message : "";
   };
 
   return (
     <div className="register-page container">
       <h1 className="title is-1">Register</h1>
 
-      <form action="" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <div className="field">
           <label className="label">First Name</label>
           <div className="control">
             <input
-              className="input"
+              className={`input ${handleInputErrors("firstName")}`}
               type="text"
               placeholder="John"
               name="firstName"
-              required={true}
-              value={formData.firstName}
+              value={formData.firstName || ""}
               onChange={handleFormData}
-            ></input>
+            />
           </div>
+          <p className="help is-danger">{getErrorMessage("firstName")}</p>
         </div>
 
         <div className="field">
           <label className="label">Last Name</label>
           <div className="control">
             <input
-              className="input"
+              className={`input ${handleInputErrors("lastName")}`}
               type="text"
               placeholder="Doe"
               name="lastName"
-              required={true}
-              value={formData.lastName}
+              value={formData.lastName || ""}
               onChange={handleFormData}
-            ></input>
+            />
           </div>
+          <p className="help is-danger">{getErrorMessage("lastName")}</p>
         </div>
 
         <div className="field">
@@ -91,12 +117,11 @@ const RegisterPage = () => {
               type="text"
               placeholder="johnDoe01"
               name="username"
-              required={true}
-              value={formData.username}
+              value={formData.username || ""}
               onChange={handleFormData}
-            ></input>
-            {handleInputErrors("username") && (
-              <p className="help is-warning">Username already taken</p>
+            />
+            {getErrorMessage("username") && (
+              <p className="help is-danger">{getErrorMessage("username")}</p>
             )}
           </div>
         </div>
@@ -109,18 +134,11 @@ const RegisterPage = () => {
               type="email"
               placeholder="john_doe@email.com"
               name="email"
-              required={true}
-              value={formData.email}
+              value={formData.email || ""}
               onChange={handleFormData}
-            ></input>
-            <span className="icon is-small is-left">
-              <i className="fas fa-envelope"></i>
-            </span>
-            <span className="icon is-small is-right">
-              <i className="fas fa-exclamation-triangle"></i>
-            </span>
-            {handleInputErrors("email") && (
-              <p className="help is-warning">Email already taken</p>
+            />
+            {getErrorMessage("email") && (
+              <p className="help is-danger">{getErrorMessage("email")}</p>
             )}
           </div>
         </div>
@@ -129,15 +147,33 @@ const RegisterPage = () => {
           <label className="label">Password</label>
           <div className="control">
             <input
-              className="input"
+              className={`input ${handleInputErrors("password")}`}
               type="password"
               placeholder="Password"
               name="password"
               minLength="5"
-              required={true}
-              value={formData.password}
+              value={formData.password || ""}
               onChange={handleFormData}
-            ></input>
+            />
+          </div>
+          <p className="help is-danger">{getErrorMessage("password")}</p>
+        </div>
+
+        <div className="field">
+          <label className="label">Confirm Password</label>
+          <div className="control">
+            <input
+              className={`input ${isPasswordsValid ? "" : "is-danger"}`}
+              type="password"
+              placeholder="Confirm Password"
+              name="confirmPassword"
+              minLength="5"
+              value={formData.confirmPassword || ""}
+              onChange={handleFormData}
+            />
+            {!isPasswordsValid && (
+              <p className="help is-danger">Passwords do not match</p>
+            )}
           </div>
         </div>
 
@@ -145,30 +181,30 @@ const RegisterPage = () => {
           <label className="label">Job Title</label>
           <div className="control">
             <input
-              className="input"
+              className={`input ${handleInputErrors("jobTitle")}`}
               type="text"
               placeholder="Software Engineer"
               name="jobTitle"
-              required={true}
-              value={formData.jobTitle}
+              value={formData.jobTitle || ""}
               onChange={handleFormData}
-            ></input>
+            />
           </div>
+          <p className="help is-danger">{getErrorMessage("jobTitle")}</p>
         </div>
 
         <div className="field">
           <label className="label">Tenure</label>
           <div className="control">
             <input
-              className="input"
+              className={`input ${handleInputErrors("tenure")}`}
               type="number"
               placeholder="10"
               name="tenure"
-              required={true}
-              value={formData.tenure}
+              value={formData.tenure || ""}
               onChange={handleFormData}
-            ></input>
+            />
           </div>
+          <p className="help is-danger">{getErrorMessage("tenure")}</p>
         </div>
 
         <div className="field">
@@ -179,12 +215,11 @@ const RegisterPage = () => {
               type="text"
               placeholder="E010J"
               name="eCode"
-              required={true}
-              value={formData.eCode}
+              value={formData.eCode || ""}
               onChange={handleFormData}
-            ></input>
-            {handleInputErrors("eCode") && (
-              <p className="help is-warning">Ecode already taken</p>
+            />
+            {getErrorMessage("eCode") && (
+              <p className="help is-danger">{getErrorMessage("eCode")}</p>
             )}
           </div>
         </div>
@@ -195,25 +230,36 @@ const RegisterPage = () => {
             <div className="select">
               <select
                 name="isFullTime"
-                value={formData.isFullTime}
+                value={formData.isFullTime ? "Full Time" : "Part Time"}
                 onChange={handleFormData}
               >
-                {/* <option>Select dropdown</option> */}
-                <option>Full Time</option>
-                <option>Part Time</option>
+                <option value="">Select dropdown</option>
+                <option value="Full Time">Full Time</option>
+                <option value="Part Time">Part Time</option>
               </select>
             </div>
           </div>
+          <p className="help is-danger">{getErrorMessage("isFullTime")}</p>
         </div>
 
         <div className="field is-grouped">
           <div className="control">
-            <button className="button is-link">Submit</button>
+            <button className="button is-link" type="submit">
+              Submit
+            </button>
           </div>
           <div className="control">
-            <button className="button is-link is-light">Cancel</button>
+            <button className="button is-link is-light" type="reset">
+              Cancel
+            </button>
           </div>
         </div>
+
+        {errors.find((err) => err.field === "general") && (
+          <p className="help is-danger">
+            {errors.find((err) => err.field === "general").message}
+          </p>
+        )}
       </form>
     </div>
   );
