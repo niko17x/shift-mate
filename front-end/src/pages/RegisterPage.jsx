@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import useRegisterUser from "../hooks/auth/useRegisterUser";
 import usePasswordValidation from "../hooks/auth/usePasswordValidation";
+import { Link } from "react-router-dom";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -245,13 +246,14 @@ const RegisterPage = () => {
         <div className="field is-grouped">
           <div className="control">
             <button className="button is-link" type="submit">
-              Submit
+              Register
             </button>
           </div>
+
           <div className="control">
-            <button className="button is-link is-light" type="reset">
-              Cancel
-            </button>
+            <Link to={"/login"}>
+              <button className="button is-ghost">Login</button>
+            </Link>
           </div>
         </div>
 
