@@ -71,7 +71,9 @@ export const Navbar = () => {
                 <Link className="button is-primary" to={"/register"}>
                   <strong>Sign up</strong>
                 </Link>
-                <Link className="button is-light">Log in</Link>
+                <Link className="button is-light" to={"/login"}>
+                  Log in
+                </Link>
               </div>
             </div>
           </div>
