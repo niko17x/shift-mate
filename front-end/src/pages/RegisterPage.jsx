@@ -24,6 +24,7 @@ const RegisterPage = () => {
 
   const handleFormData = (e) => {
     const { name, value } = e.target;
+
     setFormData((prevState) => ({
       ...prevState,
       [name]: name === "isFullTime" ? value === "Full Time" : value,
@@ -43,20 +44,22 @@ const RegisterPage = () => {
         isFullTime: formData.isFullTime === "Full Time",
       };
 
-      await registerUser(modifiedFormData);
+      const isRegisterSuccess = await registerUser(modifiedFormData);
 
-      setFormData({
-        firstName: "",
-        lastName: "",
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        jobTitle: "",
-        isFullTime: "",
-        tenure: "",
-        eCode: "",
-      });
+      if (isRegisterSuccess) {
+        setFormData({
+          firstName: "",
+          lastName: "",
+          username: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          jobTitle: "",
+          isFullTime: "",
+          tenure: "",
+          eCode: "",
+        });
+      }
     } catch (error) {
       console.log(error.message);
       toast.error("Failed to register user", {

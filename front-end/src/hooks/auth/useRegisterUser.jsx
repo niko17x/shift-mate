@@ -5,7 +5,6 @@ const useRegisterUser = () => {
   const [errors, setErrors] = useState([]);
 
   const registerUser = async (formData) => {
-    console.log(JSON.stringify(formData));
     setErrors([]);
     try {
       const response = await fetch("/api/user/register", {
@@ -20,13 +19,16 @@ const useRegisterUser = () => {
         const errorData = await response.json();
 
         setErrors(errorData.errors);
+        return false;
       } else {
         toast.success("Registration successful!", {
           toastId: "response-success",
         });
+        return true;
       }
     } catch (error) {
       console.log(`Failed to register user: ${error.message}`);
+      return false;
     }
   };
 

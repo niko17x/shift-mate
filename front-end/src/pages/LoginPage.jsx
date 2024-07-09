@@ -6,16 +6,18 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const { loginUser } = useLoginUser(username, password);
+  const { loginUser } = useLoginUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await loginUser();
+      const isLoginSuccess = await loginUser(username, password);
 
-      setUsername("");
-      setPassword("");
+      if (isLoginSuccess) {
+        setUsername("");
+        setPassword("");
+      }
     } catch (err) {
       console.log("Error while logging in", err.message);
     }
