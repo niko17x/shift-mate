@@ -33,7 +33,7 @@ if (rootElement) {
     <React.StrictMode>
       {/* Context providers go here */}
       <RouterProvider router={router} />
-      <ToastContainer position="bottom-left" />
+      <ToastContainer autoClose={1500} />
     </React.StrictMode>
   );
 }
