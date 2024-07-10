@@ -4,6 +4,8 @@ import useRegisterUser from "../hooks/auth/useRegisterUser";
 import usePasswordValidation from "../hooks/auth/usePasswordValidation";
 import { Link } from "react-router-dom";
 
+// TODO => PROVIDE PRE-SELECTED JOB TITLES // LIMIT ECODE LENGTH TO 5 // DEFAULT EMPLOYEE TIME TO FULL TIME
+
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -182,21 +184,6 @@ const RegisterPage = () => {
         </div>
 
         <div className="field">
-          <label className="label">Job Title</label>
-          <div className="control">
-            <input
-              className={`input ${handleInputErrors("jobTitle")}`}
-              type="text"
-              placeholder="Software Engineer"
-              name="jobTitle"
-              value={formData.jobTitle || ""}
-              onChange={handleFormData}
-            />
-          </div>
-          <p className="help is-danger">{getErrorMessage("jobTitle")}</p>
-        </div>
-
-        <div className="field">
           <label className="label">Tenure</label>
           <div className="control">
             <input
@@ -226,6 +213,28 @@ const RegisterPage = () => {
               <p className="help is-danger">{getErrorMessage("eCode")}</p>
             )}
           </div>
+        </div>
+
+        <div className="field">
+          <label className="label">Job Title</label>
+          <div className="control">
+            <div className="select">
+              <select
+                name="jobTitle"
+                value={formData.jobTitle}
+                onChange={handleFormData}
+              >
+                <option value="">Select dropdown</option>
+                <option value="Full Time">Sales</option>
+                <option value="Part Time">Software</option>
+                <option value="Part Time">Management</option>
+                <option value="Part Time">Operations</option>
+                <option value="Part Time">Administration</option>
+                <option value="Part Time">Other</option>
+              </select>
+            </div>
+          </div>
+          <p className="help is-danger">{getErrorMessage("isFullTime")}</p>
         </div>
 
         <div className="field">
