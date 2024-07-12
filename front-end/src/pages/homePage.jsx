@@ -1,8 +1,12 @@
 import React from "react";
-import Navbar from "../components/nav/Navbar";
+import Hero from "../components/homePage/hero.jsx";
 
 const HomePage = () => {
-  return <></>;
+  return (
+    <div className="home-page">
+      <Hero />
+    </div>
+  );
 };
 
 export default HomePage;
