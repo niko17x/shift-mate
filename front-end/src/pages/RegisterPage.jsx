@@ -73,7 +73,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="register-page container">
+    <div className="register-page container box">
       <h1 className="title is-1">Register</h1>
 
       <form onSubmit={handleSubmit}>
