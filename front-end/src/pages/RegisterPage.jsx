@@ -3,8 +3,10 @@ import { toast } from "react-toastify";
 import useRegisterUser from "../hooks/auth/useRegisterUser";
 import usePasswordValidation from "../hooks/auth/usePasswordValidation";
 import { Link } from "react-router-dom";
-
-// TODO => PROVIDE PRE-SELECTED JOB TITLES // LIMIT ECODE LENGTH TO 5 // DEFAULT EMPLOYEE TIME TO FULL TIME
+import {
+  getErrorMessage,
+  handleInputErrors,
+} from "../utils/userFormValidations";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -70,16 +72,6 @@ const RegisterPage = () => {
     }
   };
 
-  const handleInputErrors = (field) => {
-    const errorFound = errors?.find((err) => err.field === field);
-    return errorFound ? "is-danger" : "";
-  };
-
-  const getErrorMessage = (field) => {
-    const error = errors?.find((err) => err.field === field);
-    return error ? error.message : "";
-  };
-
   return (
     <div className="register-page container">
       <h1 className="title is-1">Register</h1>
@@ -89,7 +81,7 @@ const RegisterPage = () => {
           <label className="label">First Name</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors("firstName")}`}
+              className={`input ${handleInputErrors(errors, "firstName")}`}
               type="text"
               placeholder="John"
               name="firstName"
@@ -97,14 +89,16 @@ const RegisterPage = () => {
               onChange={handleFormData}
             />
           </div>
-          <p className="help is-danger">{getErrorMessage("firstName")}</p>
+          <p className="help is-danger">
+            {getErrorMessage(errors, "firstName")}
+          </p>
         </div>
 
         <div className="field">
           <label className="label">Last Name</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors("lastName")}`}
+              className={`input ${handleInputErrors(errors, "lastName")}`}
               type="text"
               placeholder="Doe"
               name="lastName"
@@ -112,22 +106,26 @@ const RegisterPage = () => {
               onChange={handleFormData}
             />
           </div>
-          <p className="help is-danger">{getErrorMessage("lastName")}</p>
+          <p className="help is-danger">
+            {getErrorMessage(errors, "lastName")}
+          </p>
         </div>
 
         <div className="field">
           <label className="label">Username</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors("username")}`}
+              className={`input ${handleInputErrors(errors, "username")}`}
               type="text"
               placeholder="johnDoe01"
               name="username"
               value={formData.username || ""}
               onChange={handleFormData}
             />
-            {getErrorMessage("username") && (
-              <p className="help is-danger">{getErrorMessage("username")}</p>
+            {getErrorMessage(errors, "username") && (
+              <p className="help is-danger">
+                {getErrorMessage(errors, "username")}
+              </p>
             )}
           </div>
         </div>
@@ -136,15 +134,17 @@ const RegisterPage = () => {
           <label className="label">Email</label>
           <div className="control has-icons-right">
             <input
-              className={`input ${handleInputErrors("email")}`}
+              className={`input ${handleInputErrors(errors, "email")}`}
               type="email"
               placeholder="john_doe@email.com"
               name="email"
               value={formData.email || ""}
               onChange={handleFormData}
             />
-            {getErrorMessage("email") && (
-              <p className="help is-danger">{getErrorMessage("email")}</p>
+            {getErrorMessage(errors, "email") && (
+              <p className="help is-danger">
+                {getErrorMessage(errors, "email")}
+              </p>
             )}
           </div>
         </div>
@@ -153,7 +153,7 @@ const RegisterPage = () => {
           <label className="label">Password</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors("password")}`}
+              className={`input ${handleInputErrors(errors, "password")}`}
               type="password"
               placeholder="Password"
               name="password"
@@ -162,7 +162,9 @@ const RegisterPage = () => {
               onChange={handleFormData}
             />
           </div>
-          <p className="help is-danger">{getErrorMessage("password")}</p>
+          <p className="help is-danger">
+            {getErrorMessage(errors, "password")}
+          </p>
         </div>
 
         <div className="field">
@@ -187,7 +189,7 @@ const RegisterPage = () => {
           <label className="label">Tenure</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors("tenure")}`}
+              className={`input ${handleInputErrors(errors, "tenure")}`}
               type="number"
               placeholder="10"
               name="tenure"
@@ -195,22 +197,26 @@ const RegisterPage = () => {
               onChange={handleFormData}
             />
           </div>
-          <p className="help is-danger">{getErrorMessage("tenure")}</p>
+          <p className="help is-danger">{getErrorMessage(errors, "tenure")}</p>
         </div>
 
         <div className="field">
           <label className="label">Ecode</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors("eCode")}`}
+              className={`input ${handleInputErrors(errors, "eCode")}`}
               type="text"
               placeholder="E010J"
+              minLength={5}
+              maxLength={5}
               name="eCode"
               value={formData.eCode || ""}
               onChange={handleFormData}
             />
-            {getErrorMessage("eCode") && (
-              <p className="help is-danger">{getErrorMessage("eCode")}</p>
+            {getErrorMessage(errors, "eCode") && (
+              <p className="help is-danger">
+                {getErrorMessage(errors, "eCode")}
+              </p>
             )}
           </div>
         </div>
@@ -234,7 +240,9 @@ const RegisterPage = () => {
               </select>
             </div>
           </div>
-          <p className="help is-danger">{getErrorMessage("isFullTime")}</p>
+          <p className="help is-danger">
+            {getErrorMessage(errors, "isFullTime")}
+          </p>
         </div>
 
         <div className="field">
@@ -243,16 +251,18 @@ const RegisterPage = () => {
             <div className="select">
               <select
                 name="isFullTime"
-                value={formData.isFullTime ? "Full Time" : "Part Time"}
+                value={formData.isFullTime}
                 onChange={handleFormData}
               >
-                <option value="">Select dropdown</option>
+                <option value="default">Select dropdown</option>
                 <option value="Full Time">Full Time</option>
                 <option value="Part Time">Part Time</option>
               </select>
             </div>
           </div>
-          <p className="help is-danger">{getErrorMessage("isFullTime")}</p>
+          <p className="help is-danger">
+            {getErrorMessage(errors, "isFullTime")}
+          </p>
         </div>
 
         <div className="field is-grouped">

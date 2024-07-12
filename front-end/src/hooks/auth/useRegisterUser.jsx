@@ -5,8 +5,8 @@ const useRegisterUser = () => {
   const [errors, setErrors] = useState([]);
 
   const registerUser = async (formData) => {
-    setErrors([]);
     try {
+      setErrors([]);
       const response = await fetch("/api/user/register", {
         method: "POST",
         headers: {
@@ -18,7 +18,7 @@ const useRegisterUser = () => {
       if (!response.ok) {
         const errorData = await response.json();
 
-        setErrors(errorData.errors);
+        setErrors(errorData.errors || []);
         return false;
       } else {
         toast.success("Registration successful!", {
