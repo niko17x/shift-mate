@@ -48,19 +48,21 @@ export const Navbar = () => {
 
         <div id="navbarBasicExample" className="navbar-menu">
           <div className="navbar-start">
-            <a className="navbar-item">Home</a>
+            <Link className="navbar-item">Home</Link>
 
-            <a className="navbar-item">Scheduler</a>
+            <Link className="navbar-item" to={"/scheduler"}>
+              Scheduler
+            </Link>
 
             <div className="navbar-item has-dropdown is-hoverable">
-              <a className="navbar-link">More</a>
+              <Link className="navbar-link">More</Link>
 
               <div className="navbar-dropdown">
-                <a className="navbar-item">About</a>
-                <a className="navbar-item is-selected">Jobs</a>
-                <a className="navbar-item">Contact</a>
+                <Link className="navbar-item">About</Link>
+                <Link className="navbar-item is-selected">Jobs</Link>
+                <Link className="navbar-item">Contact</Link>
                 {/* <hr className="navbar-divider"> */}
-                <a className="navbar-item">Report an issue</a>
+                <Link className="navbar-item">Report an issue</Link>
               </div>
             </div>
           </div>
