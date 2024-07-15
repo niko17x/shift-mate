@@ -89,9 +89,9 @@ export const loginUser = asyncHandler(async (req, res) => {
   if (user && (await user.matchPassword(password))) {
     const token = generateToken(res, user._id);
 
-    res.status(201).json({
+    return res.status(201).json({
       token,
-      message: "Login successfull",
+      message: "Login successful",
       user: {
         _id: user._id,
         firstName: user.firstName,
@@ -105,7 +105,7 @@ export const loginUser = asyncHandler(async (req, res) => {
       },
     });
   } else {
-    res.status(400).json({ message: "Invalid credentials" });
+    return res.status(400).json({ message: "Invalid credentials" });
   }
 });
 
@@ -276,4 +276,24 @@ export const updateWeekNum = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: "Updated week number for current user successfully",
   });
+});
+
+export const getActiveUserData = asyncHandler(async (req, res) => {
+  if (req.user) {
+    res.json({
+      _id: req.user._id,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      username: req.user.username,
+      email: req.user.email,
+      jobTitle: req.user.jobTitle,
+      isFullTimeEmp: req.user.isFullTimeEmp,
+      tenure: req.user.tenure,
+      eCode: req.user.eCode,
+    });
+  } else {
+    res.status(404).json({
+      message: "User not found",
+    });
+  }
 });

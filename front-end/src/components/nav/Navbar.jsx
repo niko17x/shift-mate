@@ -1,7 +1,10 @@
 import "bulma/css/bulma.min.css";
 import { Link } from "react-router-dom";
+import useFetchActiveUser from "../../hooks/auth/useFetchAuthUser";
 
 export const Navbar = () => {
+  const { activeUserData } = useFetchActiveUser();
+
   return (
     <>
       <nav className="navbar" role="navigation" aria-label="main navigation">
