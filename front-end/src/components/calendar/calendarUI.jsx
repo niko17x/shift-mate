@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Calendar from "react-calendar";
 import { DateTime } from "luxon";
 import "react-calendar/dist/Calendar.css";
-import getWeekNumber from "../utils/getWeekNumber";
-import getDaysOfWeek from "../utils/getDaysOfWeek";
+import getWeekNumber from "../../utils/getWeekNumber";
+import getDaysOfWeek from "../../utils/getDaysOfWeek";
 
 const MyCalendar = () => {
   const [date, setDate] = useState(null);
