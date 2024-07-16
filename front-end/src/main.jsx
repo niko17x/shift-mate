@@ -14,14 +14,44 @@ import HomePage from "./pages/HomePage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import SchedulerPage from "./pages/SchedulerPage.jsx";
+import ErrorFallback from "./components/errors/ErrorFallback.jsx";
+import { ErrorBoundary } from "react-error-boundary";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route index element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/scheduler" element={<SchedulerPage />} />
+      <Route
+        index
+        element={
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <HomePage />
+          </ErrorBoundary>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <LoginPage />
+          </ErrorBoundary>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <RegisterPage />
+          </ErrorBoundary>
+        }
+      />
+      <Route
+        path="/scheduler"
+        element={
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <SchedulerPage />
+          </ErrorBoundary>
+        }
+      />
     </Route>
   )
 );
