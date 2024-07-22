@@ -16,6 +16,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import SchedulerPage from "./pages/SchedulerPage.jsx";
 import ErrorFallback from "./components/errors/ErrorFallback.jsx";
 import { ErrorBoundary } from "react-error-boundary";
+import ProfilePage from "./pages/ProfilePage.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,6 +53,14 @@ const router = createBrowserRouter(
           </ErrorBoundary>
         }
       />
+      <Route
+        path="/profile/:id"
+        element={
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <ProfilePage />
+          </ErrorBoundary>
+        }
+      />
     </Route>
   )
 );
@@ -67,5 +76,10 @@ if (rootElement) {
       <RouterProvider router={router} />
       <ToastContainer autoClose={1500} />
     </React.StrictMode>
+
+    // <div>
+    //   <RouterProvider router={router} />
+    //   <ToastContainer autoClose={1500} />
+    // </div>
   );
 }

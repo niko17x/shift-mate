@@ -1,9 +1,16 @@
 import "bulma/css/bulma.min.css";
 import { Link } from "react-router-dom";
 import useFetchActiveUser from "../../hooks/auth/useFetchAuthUser";
+import useFetchLogout from "../../hooks/auth/useFetchLogout";
+import { useEffect } from "react";
 
 export const Navbar = () => {
   const { activeUserData } = useFetchActiveUser();
+  const { logout } = useFetchLogout();
+
+  console.log(activeUserData);
+
+  // TODO => FIGURE OUT (ONCE AND FOR ALL) HOW TO DEAL WITH ASYNC DATA TO DISPLAY CORRECT TERNARY JSX BASED ON ACTIVE USER LOGGED IN/OUT.
 
   return (
     <>
@@ -70,18 +77,37 @@ export const Navbar = () => {
             </div>
           </div>
 
-          <div className="navbar-end">
-            <div className="navbar-item">
-              <div className="buttons">
-                <Link className="button is-primary" to={"/register"}>
-                  <strong>Sign up</strong>
-                </Link>
-                <Link className="button is-light" to={"/login"}>
-                  Log in
+          {activeUserData ? (
+            <div className="navbar-item has-dropdown is-hoverable">
+              <Link
+                className="navbar-link"
+                to={`/profile/${activeUserData._id}`}
+              >
+                Profile
+              </Link>
+              <div className="navbar-dropdown">
+                <Link
+                  className="navbar-item"
+                  onClick={() => logout(useFetchActiveUser)}
+                >
+                  Log out
                 </Link>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="navbar-end">
+              <div className="navbar-item">
+                <div className="buttons">
+                  <Link className="button is-primary" to={"/register"}>
+                    <strong>Sign up</strong>
+                  </Link>
+                  <Link className="button is-light" to={"/login/"}>
+                    Log in
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
     </>
