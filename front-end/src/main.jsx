@@ -17,6 +17,7 @@ import SchedulerPage from "./pages/SchedulerPage.jsx";
 import ErrorFallback from "./components/errors/ErrorFallback.jsx";
 import { ErrorBoundary } from "react-error-boundary";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import UserProvider from "./context/UserContext.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -73,8 +74,10 @@ if (rootElement) {
   root.render(
     <React.StrictMode>
       {/* Context providers go here */}
-      <RouterProvider router={router} />
-      <ToastContainer autoClose={1500} />
+      <UserProvider>
+        <RouterProvider router={router} />
+        <ToastContainer autoClose={1500} />
+      </UserProvider>
     </React.StrictMode>
 
     // <div>
