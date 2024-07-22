@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useLoginUser from "../hooks/auth/useLoginUser";
 
 const LoginPage = () => {
@@ -7,6 +8,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
 
   const { loginUser } = useLoginUser();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,6 +19,7 @@ const LoginPage = () => {
       if (isLoginSuccess) {
         setUsername("");
         setPassword("");
+        navigate("/");
       }
     } catch (err) {
       console.log("Error while logging in", err.message);
