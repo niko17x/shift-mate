@@ -1,36 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import Calendar from "react-calendar";
-import { DateTime } from "luxon";
 import "react-calendar/dist/Calendar.css";
-import getWeekNumber from "../../utils/getWeekNumber";
-import getDaysOfWeek from "../../utils/getDaysOfWeek";
+import useSelectedDate from "../../hooks/calendar/useSelectedDate";
+import DisplayDates from "../schedulerPage/DisplayDates";
 
 const MyCalendar = () => {
-  const [date, setDate] = useState(null);
+  const { date, handleDateChange } = useSelectedDate();
 
-  const handleDateChange = (selectedDate) => {
-    // result => _DateTime {ts: 1718953200000, _zone: _SystemZone, loc: _Locale, invalid: null, weekData: null, …}:
-    const luxonDate = DateTime.fromJSDate(selectedDate);
-
-    const formattedDate = luxonDate.toISODate();
-
-    setDate(formattedDate);
-  };
-
-  if (date) {
-    const weekNum = getWeekNumber(date);
-
-    getDaysOfWeek(date, weekNum);
-  }
+  // DisplayDates(date, 22);
 
   return (
     <div className="calendar-ui">
-      <Calendar onChange={handleDateChange} value={date} />
+      <Calendar
+        onChange={handleDateChange}
+        value={date ? new Date(date) : null}
+      />
     </div>
   );
 };
 
 export default MyCalendar;
-
-// api call to change current auth user 'focusedWeekNum'.
-// api call retrieve current auth user 'focusedWeekNum' for client side display.
