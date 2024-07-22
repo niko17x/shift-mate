@@ -14,7 +14,9 @@ const useFetchActiveUser = () => {
           },
         });
 
-        if (response.ok) {
+        if (response.status === 401) {
+          setActiveUserData(null);
+        } else if (response.ok) {
           const data = await response.json();
           setActiveUserData(data);
         } else {
