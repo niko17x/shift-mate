@@ -1,16 +1,19 @@
 import "bulma/css/bulma.min.css";
 import { Link } from "react-router-dom";
-import useFetchActiveUser from "../../hooks/auth/useFetchAuthUser";
+import useFetchActiveUser from "../../hooks/auth/useFetchActiveuser";
 import useFetchLogout from "../../hooks/auth/useFetchLogout";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../../context/UserContext";
 
 export const Navbar = () => {
-  const { activeUserData } = useFetchActiveUser();
+  const { activeUserData, fetchActiveUser } = useFetchActiveUser();
   const { logout } = useFetchLogout();
+  const { setIsUserLoggedIn, isUserLoggedIn } = useContext(UserContext);
 
-  console.log(activeUserData);
-
-  // TODO => FIGURE OUT (ONCE AND FOR ALL) HOW TO DEAL WITH ASYNC DATA TO DISPLAY CORRECT TERNARY JSX BASED ON ACTIVE USER LOGGED IN/OUT.
+  const handleLogout = () => {
+    logout();
+    setIsUserLoggedIn(false);
+  };
 
   return (
     <>
@@ -77,19 +80,16 @@ export const Navbar = () => {
             </div>
           </div>
 
-          {activeUserData ? (
+          {isUserLoggedIn ? (
             <div className="navbar-item has-dropdown is-hoverable">
               <Link
                 className="navbar-link"
-                to={`/profile/${activeUserData._id}`}
+                to={`${activeUserData ? `/profile/${activeUserData._id}` : ""}`}
               >
                 Profile
               </Link>
               <div className="navbar-dropdown">
-                <Link
-                  className="navbar-item"
-                  onClick={() => logout(useFetchActiveUser)}
-                >
+                <Link className="navbar-item" onClick={handleLogout}>
                   Log out
                 </Link>
               </div>
