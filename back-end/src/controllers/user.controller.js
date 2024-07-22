@@ -133,19 +133,33 @@ export const userProfile = asyncHandler(async (req, res) => {
 });
 
 export const updateProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.userId);
 
   if (!user) {
     res.status(400).json({ message: "Failed to retrieve user profile" });
   }
+  //!
+  // const { email } = req.body;
+  // const errors = [];
 
+  // const emailExists = await User.findOne({ email });
+  // if (emailExists) {
+  //   // "field" property allows which input has error:
+  //   errors.push({ field: "email", message: "Email already exists" });
+  // }
+
+  // if (errors.length > 0) {
+  //   console.log(errors);
+  //   return res.status(400).json({ errors });
+  // }
+  //
   user.firstName = req.body.firstName || user.firstName;
   user.lastName = req.body.lastName || user.lastName;
   user.username = req.body.username || user.username;
   user.email = req.body.email || user.email;
   user.eCode = req.body.eCode || user.eCode;
   user.jobTitle = req.body.jobTitle || user.jobTitle;
-  user.isFullTimeEmp = req.body.isFullTimeEmp || user.isFullTimeEmp;
+  user.isFullTime = req.body.isFullTime || user.isFullTime;
   user.tenure = req.body.tenure || user.tenure;
 
   if (req.body.password) {
@@ -163,7 +177,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
     email: updatedUser.email,
     eCode: updatedUser.eCode,
     jobTitle: updatedUser.jobTitle,
-    isFullTimeEmp: updatedUser.isFullTimeEmp,
+    isFullTime: updatedUser.isFullTime,
     tenure: updatedUser.tenure,
   });
 });
@@ -292,7 +306,7 @@ export const getActiveUserData = asyncHandler(async (req, res) => {
       eCode: req.user.eCode,
     });
   } else {
-    res.status(404).json({
+    res.status(401).json({
       message: "User not found",
     });
   }
