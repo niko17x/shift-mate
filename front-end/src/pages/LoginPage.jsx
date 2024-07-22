@@ -1,22 +1,30 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import useLoginUser from "../hooks/auth/useLoginUser";
+import useFetchActiveUser from "../hooks/auth/useFetchActiveuser";
+import { UserContext } from "../context/UserContext";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const { loginUser } = useLoginUser();
+  const { loginUser, error: loginError } = useLoginUser();
+  const { fetchActiveUser } = useFetchActiveUser();
+  const { setIsUserLoggedIn } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const isLoginSuccess = await loginUser(username, password);
+      const isLoginSuccess = await loginUser(
+        username,
+        password,
+        fetchActiveUser
+      );
 
       if (isLoginSuccess) {
+        setIsUserLoggedIn(true);
         setUsername("");
         setPassword("");
         navigate("/");
@@ -30,7 +38,7 @@ const LoginPage = () => {
     <div className="login-page container box">
       <h1 className="title is-1">Login</h1>
 
-      <form action="" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <div className="field">
           <label className="label">Username</label>
           <div className="control">
@@ -42,7 +50,7 @@ const LoginPage = () => {
               required={true}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-            ></input>
+            />
           </div>
         </div>
 
@@ -57,9 +65,11 @@ const LoginPage = () => {
               required={true}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-            ></input>
+            />
           </div>
         </div>
+
+        {loginError && <p className="help is-danger">{loginError}</p>}
 
         <div className="field is-grouped">
           <div className="control">
@@ -68,7 +78,7 @@ const LoginPage = () => {
             </button>
           </div>
           <div className="control">
-            <Link to={"/register"}>
+            <Link to="/register">
               <button className="button is-link is-ghost">Register</button>
             </Link>
           </div>
@@ -77,7 +87,5 @@ const LoginPage = () => {
     </div>
   );
 };
-
-// TODO: CREATE A MODAL AFTER CLICKING 'CANCEL' BUTTON
 
 export default LoginPage;

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const useFetchLogout = () => {
   const navigate = useNavigate();
 
-  const logout = async (refetchActiveUser) => {
+  const logout = async () => {
     try {
       const response = await fetch("/api/user/logout", {
         method: "GET",
@@ -21,7 +21,6 @@ const useFetchLogout = () => {
         toast.success("Logged out successfully", {
           toastId: "user-logout-success",
         });
-        refetchActiveUser();
         navigate("/");
       }
     } catch (err) {
