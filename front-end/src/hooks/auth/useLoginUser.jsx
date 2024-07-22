@@ -22,7 +22,7 @@ const useLoginUser = () => {
       } else {
         const errorData = await response.json();
         console.log(`Failed to login user: ${errorData.message}`);
-        toast.error("Failed to log in", {
+        toast.error("Invalid credentials", {
           toastId: "login-user-fail",
         });
         return false;
