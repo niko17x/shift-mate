@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import useRegisterUser from "../hooks/auth/useRegisterUser";
+import useFetchRegisterUser from "../hooks/auth/useFetchRegisterUser";
 import usePasswordValidation from "../hooks/auth/usePasswordValidation";
 import { Link } from "react-router-dom";
 import {
@@ -22,7 +22,7 @@ const RegisterPage = () => {
     eCode: "",
   });
 
-  const { registerUser, errors } = useRegisterUser();
+  const { registerUser, errors } = useFetchRegisterUser();
   const { validatePasswords, isPasswordsValid } =
     usePasswordValidation(formData);
 
