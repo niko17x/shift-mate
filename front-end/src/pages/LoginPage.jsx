@@ -1,15 +1,13 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useLoginUser from "../hooks/auth/useLoginUser";
-import useFetchActiveUser from "../hooks/auth/useFetchActiveuser";
 import { UserContext } from "../context/UserContext";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const { loginUser, error: loginError } = useLoginUser();
-  const { fetchActiveUser } = useFetchActiveUser();
+  const { loginUser } = useLoginUser();
   const { setIsUserLoggedIn } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -17,11 +15,7 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const isLoginSuccess = await loginUser(
-        username,
-        password,
-        fetchActiveUser
-      );
+      const isLoginSuccess = await loginUser(username, password);
 
       if (isLoginSuccess) {
         setIsUserLoggedIn(true);
@@ -69,7 +63,7 @@ const LoginPage = () => {
           </div>
         </div>
 
-        {loginError && <p className="help is-danger">{loginError}</p>}
+        {/* {loginError && <p className="help is-danger">{loginError}</p>} */}
 
         <div className="field is-grouped">
           <div className="control">
