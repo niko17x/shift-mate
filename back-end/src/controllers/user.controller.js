@@ -82,12 +82,17 @@ export const registerUser = asyncHandler(async (req, res) => {
 });
 
 export const loginUser = asyncHandler(async (req, res) => {
+  // console.log(req.user);
   const { username, password } = req.body;
 
   const user = await User.findOne({ username });
 
   if (user && (await user.matchPassword(password))) {
     const token = generateToken(res, user._id);
+
+    // ! update here
+    user.isLoggedIn = true;
+    await user.save();
 
     return res.status(201).json({
       token,
@@ -102,6 +107,7 @@ export const loginUser = asyncHandler(async (req, res) => {
         isFullTimeEmp: user.isFullTimeEmp,
         tenure: user.tenure,
         eCode: user.eCode,
+        isLoggedIn: user.isLoggedIn,
       },
     });
   } else {
@@ -110,6 +116,14 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
+  const user = req.user;
+
+  if (user) {
+    user.isLoggedIn = false;
+    await user.save();
+    console.log(user);
+  }
+
   res.cookie("jwt", "", {
     httpOnly: true,
     expires: new Date(1),
@@ -304,6 +318,7 @@ export const getActiveUserData = asyncHandler(async (req, res) => {
       isFullTimeEmp: req.user.isFullTimeEmp,
       tenure: req.user.tenure,
       eCode: req.user.eCode,
+      isLoggedIn: req.user.isLoggedIn,
     });
   } else {
     res.status(401).json({
