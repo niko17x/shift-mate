@@ -2,11 +2,11 @@ import "bulma/css/bulma.min.css";
 import { Link } from "react-router-dom";
 import useFetchActiveUser from "../../hooks/auth/useFetchActiveuser";
 import useFetchLogout from "../../hooks/auth/useFetchLogout";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
 
 export const Navbar = () => {
-  const { activeUserData, fetchActiveUser } = useFetchActiveUser();
+  const { activeUserData, isLoading } = useFetchActiveUser();
   const { logout } = useFetchLogout();
   const { setIsUserLoggedIn, isUserLoggedIn } = useContext(UserContext);
 
@@ -15,12 +15,17 @@ export const Navbar = () => {
     setIsUserLoggedIn(false);
   };
 
+  // todo => implement <Loader /> component
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
-          <Link className="navbar-item" to={"/"}>
-            {/* <svg
+          {/* <Link className="navbar-item" to={"/"}> */}
+          {/* <svg
               width="640"
               height="160"
               viewBox="0 0 640 160"
@@ -42,8 +47,8 @@ export const Navbar = () => {
               />
             </svg> */}
 
-            <h1>Shift Mate</h1>
-          </Link>
+          {/* <h1>Shift Mate</h1>
+          </Link> */}
 
           <a
             role="button"
@@ -61,7 +66,9 @@ export const Navbar = () => {
 
         <div id="navbarBasicExample" className="navbar-menu">
           <div className="navbar-start">
-            <Link className="navbar-item">Home</Link>
+            <Link className="navbar-item" to={"/"}>
+              Home
+            </Link>
 
             <Link className="navbar-item" to={"/scheduler"}>
               Scheduler
@@ -72,7 +79,6 @@ export const Navbar = () => {
 
               <div className="navbar-dropdown">
                 <Link className="navbar-item">About</Link>
-                <Link className="navbar-item is-selected">Jobs</Link>
                 <Link className="navbar-item">Contact</Link>
                 {/* <hr className="navbar-divider"> */}
                 <Link className="navbar-item">Report an issue</Link>
