@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useContext } from "react";
+import { UserContext } from "../../context/UserContext";
 
 const useFetchActiveUser = () => {
   const [activeUserData, setActiveUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { setIsUserLoggedIn } = useContext(UserContext);
 
-  const fetchActiveUser = async () => {
+  const fetchActiveUser = useCallback(async () => {
     try {
       const response = await fetch("/api/user/active-user-data", {
         method: "GET",
@@ -13,24 +16,28 @@ const useFetchActiveUser = () => {
         },
       });
 
-      if (response.status === 401) {
-        setActiveUserData(null);
-      } else if (response.ok) {
+      if (response.ok) {
         const data = await response.json();
         setActiveUserData(data);
+        setIsUserLoggedIn(data.isLoggedIn);
       } else {
-        console.log("Failed to fetch user data");
+        setActiveUserData(null);
+        setIsUserLoggedIn(false);
       }
     } catch (err) {
       console.log(err);
+      setActiveUserData(null);
+      setIsUserLoggedIn(false);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [setIsUserLoggedIn]);
 
   useEffect(() => {
     fetchActiveUser();
-  }, []);
+  }, [fetchActiveUser]);
 
-  return { activeUserData, fetchActiveUser };
+  return { activeUserData, fetchActiveUser, isLoading };
 };
 
 export default useFetchActiveUser;
