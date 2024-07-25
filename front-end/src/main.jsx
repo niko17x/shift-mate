@@ -73,16 +73,17 @@ if (rootElement) {
 
   root.render(
     <React.StrictMode>
-      {/* Context providers go here */}
       <UserProvider>
         <RouterProvider router={router} />
-        <ToastContainer autoClose={1500} />
+        <ToastContainer autoClose={1500} position="top-center" />
       </UserProvider>
     </React.StrictMode>
 
     // <div>
-    //   <RouterProvider router={router} />
-    //   <ToastContainer autoClose={1500} />
+    //   <UserProvider>
+    //     <RouterProvider router={router} />
+    //     <ToastContainer autoClose={1500} />
+    //   </UserProvider>
     // </div>
   );
 }
