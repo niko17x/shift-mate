@@ -22,46 +22,11 @@ import UserProvider from "./context/UserContext.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route
-        index
-        element={
-          <ErrorBoundary FallbackComponent={ErrorFallback}>
-            <HomePage />
-          </ErrorBoundary>
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          <ErrorBoundary FallbackComponent={ErrorFallback}>
-            <LoginPage />
-          </ErrorBoundary>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <ErrorBoundary FallbackComponent={ErrorFallback}>
-            <RegisterPage />
-          </ErrorBoundary>
-        }
-      />
-      <Route
-        path="/scheduler"
-        element={
-          <ErrorBoundary FallbackComponent={ErrorFallback}>
-            <SchedulerPage />
-          </ErrorBoundary>
-        }
-      />
-      <Route
-        path="/profile/:id"
-        element={
-          <ErrorBoundary FallbackComponent={ErrorFallback}>
-            <ProfilePage />
-          </ErrorBoundary>
-        }
-      />
+      <Route index element={<HomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/scheduler" element={<SchedulerPage />} />
+      <Route path="/profile/:id" element={<ProfilePage />} />
     </Route>
   )
 );
@@ -73,10 +38,12 @@ if (rootElement) {
 
   root.render(
     <React.StrictMode>
-      <UserProvider>
-        <RouterProvider router={router} />
-        <ToastContainer autoClose={1500} position="top-center" />
-      </UserProvider>
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <UserProvider>
+          <RouterProvider router={router} />
+          <ToastContainer autoClose={1500} position="top-center" />
+        </UserProvider>
+      </ErrorBoundary>
     </React.StrictMode>
 
     // <div>
