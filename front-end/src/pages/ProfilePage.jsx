@@ -8,16 +8,14 @@ import { toast } from "react-toastify";
 
 const ProfilePage = () => {
   const { id } = useParams();
-  const { validatePasswords, isPasswordsValid } = usePasswordValidation();
+  const { validatePasswords } = usePasswordValidation();
   const { profileData, isLoading } = useFetchUserProfile(id);
-  const { updateUserProfile, updatedProfileData } = useFetchUpdateUserProfile();
-
+  const { updateUserProfile } = useFetchUpdateUserProfile();
   const [profileDataForm, setProfileDataForm] = useState(null);
 
   useEffect(() => {
     if (profileData) {
       setProfileDataForm({
-        // profileImage: profileData.profileImage,
         firstName: profileData.firstName,
         lastName: profileData.lastName,
         username: profileData.username,
@@ -25,33 +23,31 @@ const ProfilePage = () => {
         jobTitle: profileData.jobTitle.toLowerCase(),
         eCode: profileData.eCode,
         tenure: profileData.tenure,
-        isFullTime: profileData.isFullTime ? "full" : "part",
+        isFullTime: profileData.isFullTime,
         password: "",
         confirmPassword: "",
       });
     }
   }, [profileData]);
 
-  // console.log(profileDataForm);
-
   const handleFormData = (e) => {
     const { name, value } = e.target;
+
     setProfileDataForm((prevState) => ({
       ...prevState,
-      [name]: value === "full" ? true : value === "part" ? false : value,
+      [name]: name === "isFullTime" ? value === "full" : value,
     }));
+
+    // console.log(profileDataForm);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validatePasswords(profileDataForm)) {
-      setProfileDataForm({
-        ...profileDataForm,
-        password: "",
-        confirmPassword: "",
-      });
-      return;
+    if (profileDataForm.password) {
+      if (!validatePasswords(profileDataForm)) {
+        return;
+      }
     }
 
     try {
@@ -65,8 +61,6 @@ const ProfilePage = () => {
       });
     }
   };
-
-  // TODO => HANDLING ERROR INPUTS IN THE BACKEND AND PREVENTING CERTAIN INPUTS FROM BEING EDITED (NON-ADMIN).
 
   return (
     <div className="register-page container box">
@@ -151,7 +145,6 @@ const ProfilePage = () => {
             <label className="label">New Password</label>
             <div className="control">
               <input
-                // className={`input ${isPasswordsValid ? "" : "is-danger"}`}
                 className="input"
                 type="password"
                 placeholder="Confirm Password"
@@ -160,9 +153,6 @@ const ProfilePage = () => {
                 minLength="5"
                 onChange={handleFormData}
               />
-              {/* {!isPasswordsValid && (
-                <p className="help is-danger">Passwords do not match</p>
-              )} */}
             </div>
           </div>
 
@@ -224,7 +214,11 @@ const ProfilePage = () => {
                 <select
                   name="isFullTime"
                   onChange={handleFormData}
-                  value={profileDataForm ? profileDataForm.isFullTime : ""}
+                  value={
+                    profileDataForm && profileDataForm.isFullTime
+                      ? "full"
+                      : "part"
+                  }
                 >
                   <option value="full">Full Time</option>
                   <option value="part">Part Time</option>
@@ -240,12 +234,6 @@ const ProfilePage = () => {
               </button>
             </div>
           </div>
-
-          {/* {errors.find((err) => err.field === "general") && (
-              <p className="help is-danger">
-                {errors.find((err) => err.field === "general").message}
-              </p>
-            )} */}
         </form>
       )}
     </div>

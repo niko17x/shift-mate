@@ -28,6 +28,8 @@ const LoginPage = () => {
     }
   };
 
+  console.log("LoginPage component rendered");
+
   return (
     <div className="login-page container box">
       <h1 className="title is-1">Login</h1>
@@ -41,7 +43,7 @@ const LoginPage = () => {
               type="text"
               placeholder="johnDoe01"
               name="username"
-              required={true}
+              // required={true}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -56,14 +58,12 @@ const LoginPage = () => {
               type="password"
               placeholder="Password"
               name="password"
-              required={true}
+              // required={true}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
         </div>
-
-        {/* {loginError && <p className="help is-danger">{loginError}</p>} */}
 
         <div className="field is-grouped">
           <div className="control">

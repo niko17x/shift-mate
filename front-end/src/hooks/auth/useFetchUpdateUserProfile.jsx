@@ -5,7 +5,8 @@ const useFetchUpdateUserProfile = () => {
   const [error, setError] = useState(null);
 
   const updateUserProfile = async (userId, profileDataForm) => {
-    console.log("profileDataForm :", profileDataForm);
+    // console.log("profileDataForm :", profileDataForm.isFullTime);
+    console.log(profileDataForm);
 
     try {
       const response = await fetch(`/api/user/update-profile/${userId}`, {
@@ -18,7 +19,7 @@ const useFetchUpdateUserProfile = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("data:", JSON.stringify(data, null, 2));
+        // console.log("data:", JSON.stringify(data, null, 2));
         setUpdatedProfileData(data);
       } else {
         const errorData = await response.json();

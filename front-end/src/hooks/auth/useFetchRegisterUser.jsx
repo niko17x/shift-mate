@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useAuthContext } from "./useAuthContext";
 
 const useFetchRegisterUser = () => {
   const [errors, setErrors] = useState([]);
+  const { dispatch } = useAuthContext();
 
   const registerUser = async (formData) => {
     try {
@@ -15,15 +17,18 @@ const useFetchRegisterUser = () => {
         body: JSON.stringify(formData),
       });
 
+      // console.log(formData);
+
       if (!response.ok) {
         const errorData = await response.json();
-
         setErrors(errorData.errors || []);
+
         return false;
       } else {
         toast.success("Registration successful!", {
           toastId: "response-success",
         });
+        dispatch({ type: "LOGIN" });
         return true;
       }
     } catch (error) {

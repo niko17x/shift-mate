@@ -3,10 +3,10 @@ import { toast } from "react-toastify";
 import useFetchRegisterUser from "../hooks/auth/useFetchRegisterUser";
 import usePasswordValidation from "../hooks/auth/usePasswordValidation";
 import { Link } from "react-router-dom";
-import {
-  getErrorMessage,
-  handleInputErrors,
-} from "../utils/userFormValidations";
+import handleRegisterInputErrors from "../utils/handleRegisterInputErrors";
+
+// todo => add loading state
+// todo => fix confirm password input error handling
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -21,10 +21,10 @@ const RegisterPage = () => {
     tenure: "",
     eCode: "",
   });
-
   const { registerUser, errors } = useFetchRegisterUser();
-  const { validatePasswords, isPasswordsValid } =
-    usePasswordValidation(formData);
+  const { validatePasswords } = usePasswordValidation(formData);
+  const { getInputClass, getErrorMessageText } =
+    handleRegisterInputErrors(errors);
 
   const handleFormData = (e) => {
     const { name, value } = e.target;
@@ -38,15 +38,11 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validatePasswords()) {
-      return;
-    }
+    validatePasswords(formData);
 
     try {
-      const modifiedFormData = {
-        ...formData,
-        isFullTime: formData.isFullTime === "Full Time",
-      };
+      const { confirmPassword, ...modifiedFormData } = formData;
+      modifiedFormData.isFullTime = formData.isFullTime === "full";
 
       const isRegisterSuccess = await registerUser(modifiedFormData);
 
@@ -81,7 +77,7 @@ const RegisterPage = () => {
           <label className="label">First Name</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors(errors, "firstName")}`}
+              className={`input ${getInputClass("firstName")}`}
               type="text"
               placeholder="John"
               name="firstName"
@@ -89,16 +85,13 @@ const RegisterPage = () => {
               onChange={handleFormData}
             />
           </div>
-          <p className="help is-danger">
-            {getErrorMessage(errors, "firstName")}
-          </p>
+          <p className="help is-danger">{getErrorMessageText("firstName")}</p>
         </div>
-
         <div className="field">
           <label className="label">Last Name</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors(errors, "lastName")}`}
+              className={`input ${getInputClass("lastName")}`}
               type="text"
               placeholder="Doe"
               name="lastName"
@@ -106,54 +99,41 @@ const RegisterPage = () => {
               onChange={handleFormData}
             />
           </div>
-          <p className="help is-danger">
-            {getErrorMessage(errors, "lastName")}
-          </p>
+          <p className="help is-danger">{getErrorMessageText("lastName")}</p>
         </div>
-
         <div className="field">
           <label className="label">Username</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors(errors, "username")}`}
+              className={`input ${getInputClass("username")}`}
               type="text"
               placeholder="johnDoe01"
               name="username"
               value={formData.username || ""}
               onChange={handleFormData}
             />
-            {getErrorMessage(errors, "username") && (
-              <p className="help is-danger">
-                {getErrorMessage(errors, "username")}
-              </p>
-            )}
+            <p className="help is-danger">{getErrorMessageText("username")}</p>
           </div>
         </div>
-
         <div className="field">
           <label className="label">Email</label>
           <div className="control has-icons-right">
             <input
-              className={`input ${handleInputErrors(errors, "email")}`}
+              className={`input ${getInputClass("email")}`}
               type="email"
               placeholder="john_doe@email.com"
               name="email"
               value={formData.email || ""}
               onChange={handleFormData}
             />
-            {getErrorMessage(errors, "email") && (
-              <p className="help is-danger">
-                {getErrorMessage(errors, "email")}
-              </p>
-            )}
+            <p className="help is-danger">{getErrorMessageText("email")}</p>
           </div>
         </div>
-
         <div className="field">
           <label className="label">Password</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors(errors, "password")}`}
+              className={`input ${getInputClass("password")}`}
               type="password"
               placeholder="Password"
               name="password"
@@ -162,16 +142,13 @@ const RegisterPage = () => {
               onChange={handleFormData}
             />
           </div>
-          <p className="help is-danger">
-            {getErrorMessage(errors, "password")}
-          </p>
+          <p className="help is-danger">{getErrorMessageText("password")}</p>
         </div>
-
         <div className="field">
           <label className="label">Confirm Password</label>
           <div className="control">
             <input
-              className={`input ${isPasswordsValid ? "" : "is-danger"}`}
+              className="input"
               type="password"
               placeholder="Confirm Password"
               name="confirmPassword"
@@ -179,17 +156,13 @@ const RegisterPage = () => {
               value={formData.confirmPassword || ""}
               onChange={handleFormData}
             />
-            {!isPasswordsValid && (
-              <p className="help is-danger">Passwords do not match</p>
-            )}
           </div>
         </div>
-
         <div className="field">
           <label className="label">Tenure</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors(errors, "tenure")}`}
+              className={`input ${getInputClass("tenure")}`}
               type="number"
               placeholder="10"
               name="tenure"
@@ -197,14 +170,13 @@ const RegisterPage = () => {
               onChange={handleFormData}
             />
           </div>
-          <p className="help is-danger">{getErrorMessage(errors, "tenure")}</p>
+          <p className="help is-danger">{getErrorMessageText("tenure")}</p>
         </div>
-
         <div className="field">
           <label className="label">Ecode</label>
           <div className="control">
             <input
-              className={`input ${handleInputErrors(errors, "eCode")}`}
+              className={`input ${getInputClass("eCode")}`}
               type="text"
               placeholder="E010J"
               minLength={5}
@@ -213,14 +185,9 @@ const RegisterPage = () => {
               value={formData.eCode || ""}
               onChange={handleFormData}
             />
-            {getErrorMessage(errors, "eCode") && (
-              <p className="help is-danger">
-                {getErrorMessage(errors, "eCode")}
-              </p>
-            )}
+            <p className="help is-danger">{getErrorMessageText("eCode")}</p>
           </div>
         </div>
-
         <div className="field">
           <label className="label">Job Title</label>
           <div className="control">
@@ -240,11 +207,8 @@ const RegisterPage = () => {
               </select>
             </div>
           </div>
-          <p className="help is-danger">
-            {getErrorMessage(errors, "isFullTime")}
-          </p>
+          <p className="help is-danger">{getErrorMessageText("jobTitle")}</p>
         </div>
-
         <div className="field">
           <label className="label">Employee Time</label>
           <div className="control">
@@ -255,16 +219,13 @@ const RegisterPage = () => {
                 onChange={handleFormData}
               >
                 <option value="default">Select dropdown</option>
-                <option value="Full Time">Full Time</option>
-                <option value="Part Time">Part Time</option>
+                <option value="full">Full Time</option>
+                <option value="part">Part Time</option>
               </select>
             </div>
           </div>
-          <p className="help is-danger">
-            {getErrorMessage(errors, "isFullTime")}
-          </p>
+          <p className="help is-danger">{getErrorMessageText("isFullTime")}</p>
         </div>
-
         <div className="field is-grouped">
           <div className="control">
             <button className="button is-link" type="submit">
@@ -278,12 +239,6 @@ const RegisterPage = () => {
             </Link>
           </div>
         </div>
-
-        {errors.find((err) => err.field === "general") && (
-          <p className="help is-danger">
-            {errors.find((err) => err.field === "general").message}
-          </p>
-        )}
       </form>
     </div>
   );

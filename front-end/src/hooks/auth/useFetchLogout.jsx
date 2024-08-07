@@ -1,7 +1,9 @@
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "./useAuthContext";
 
 const useFetchLogout = () => {
+  const { dispatch } = useAuthContext();
   const navigate = useNavigate();
 
   const logout = async () => {
@@ -18,6 +20,7 @@ const useFetchLogout = () => {
           toastId: "user-logout-fail",
         });
       } else {
+        dispatch({ type: "LOGOUT" });
         toast.success("Logged out successfully", {
           toastId: "user-logout-success",
         });

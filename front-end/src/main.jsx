@@ -8,7 +8,6 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HomePage from "./pages/HomePage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
@@ -18,6 +17,7 @@ import ErrorFallback from "./components/errors/ErrorFallback.jsx";
 import { ErrorBoundary } from "react-error-boundary";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import UserProvider from "./context/UserContext.jsx";
+import { AuthContextProvider } from "./context/AuthContext.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,10 +39,11 @@ if (rootElement) {
   root.render(
     <React.StrictMode>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <UserProvider>
-          <RouterProvider router={router} />
-          <ToastContainer autoClose={1500} position="top-center" />
-        </UserProvider>
+        <AuthContextProvider>
+          <UserProvider>
+            <RouterProvider router={router} />
+          </UserProvider>
+        </AuthContextProvider>
       </ErrorBoundary>
     </React.StrictMode>
 

@@ -1,6 +1,11 @@
 import { toast } from "react-toastify";
+import { useAuthContext } from "./useAuthContext";
+
+// todo => add "standard" loading and error state to handle data fetching.
 
 const useLoginUser = () => {
+  const { dispatch } = useAuthContext();
+
   const loginUser = async (username, password) => {
     try {
       const response = await fetch("/api/user/login", {
@@ -15,13 +20,17 @@ const useLoginUser = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
+
+        // update the auth context
+        const { _id, username } = data.user;
+        dispatch({ type: "LOGIN", payload: { _id, username } });
+
         toast.success("Logged in successfully!", {
           toastId: "login-user-success",
         });
         return true;
       } else {
-        const errorData = await response.json();
-        console.log(`Failed to login user: ${errorData.message}`);
         toast.error("Invalid credentials", {
           toastId: "login-user-fail",
         });

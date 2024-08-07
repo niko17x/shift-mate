@@ -1,119 +1,145 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/user.model.js";
 import generateToken from "../utils/generateToken.util.js";
+import { body, validationResult } from "express-validator";
 
-export const registerUser = asyncHandler(async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    username,
-    email,
-    password,
-    jobTitle,
-    isFullTime,
-    tenure,
-    eCode,
-    isAdmin,
-    weekNum,
-  } = req.body;
+export const registerUser = [
+  body("firstName").trim().notEmpty().withMessage("First name is required"),
+  body("lastName").trim().notEmpty().withMessage("Last name is required"),
+  body("username").trim().notEmpty().withMessage("Username is required"),
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .bail()
+    .isEmail()
+    .withMessage("Must be in email format")
+    .custom(async (value) => {
+      const emailExists = await User.findOne({ email: value });
+      if (emailExists) {
+        throw new Error("Email already exists");
+      }
+    }),
+  body("password")
+    .trim()
+    .notEmpty()
+    .withMessage("Password is required")
+    .bail()
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters long"),
+  body("jobTitle").trim().notEmpty().withMessage("Please make a selection"),
+  body("isFullTime").trim().notEmpty().withMessage("Please make a selection"),
+  body("tenure").trim().notEmpty().withMessage("Tenure is required"),
+  body("eCode").trim().notEmpty().withMessage("ECODE is required"),
+  body("isAdmin").optional(),
 
-  const errors = [];
+  asyncHandler(async (req, res) => {
+    const {
+      firstName,
+      lastName,
+      username,
+      email,
+      password,
+      jobTitle,
+      isFullTime,
+      tenure,
+      eCode,
+      isAdmin,
+      weekNum,
+    } = req.body;
 
-  const emailExists = await User.findOne({ email });
-  if (emailExists) {
-    // "field" property allows which input has error:
-    errors.push({ field: "email", message: "Email already exists" });
-  }
+    // TODO => 'tenure' field is populating twice when logging in controller. Note that 'isFullTime' will never return an error since it has a default value of either false or true which is a '.notEmpty()' value.
 
-  const usernameExists = await User.findOne({ username });
-  if (usernameExists) {
-    errors.push({ field: "username", message: "Username already exists" });
-  }
+    const errors = validationResult(req);
 
-  const eCodeExists = await User.findOne({ eCode });
-  if (eCodeExists) {
-    errors.push({ field: "eCode", message: "Ecode already exists" });
-  }
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-  if (errors.length > 0) {
-    console.log(errors);
-    return res.status(400).json({ errors });
-  }
-
-  const newUser = await User.create({
-    firstName,
-    lastName,
-    username,
-    email,
-    password,
-    jobTitle,
-    isFullTime,
-    tenure,
-    eCode,
-    isAdmin: isAdmin || false,
-    weekNum: weekNum || null,
-  });
-
-  if (newUser) {
-    // create new JWT token
-    generateToken(res, newUser._id);
-    res.status(201).json({
-      message: "Registration successful",
-      user: {
-        id: newUser._id,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        username: newUser.username,
-        email: newUser.email,
-        jobTitle: newUser.jobTitle,
-        isFullTime: newUser.isFullTime,
-        tenure: newUser.tenure,
-        eCode: newUser.eCode,
-        isAdmin: true,
-        weekNum: newUser.weekNum,
-        // password: newUser.password,
-      },
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      username,
+      email,
+      password,
+      jobTitle,
+      isFullTime,
+      tenure,
+      eCode,
+      isAdmin: isAdmin || false,
+      weekNum: weekNum || null,
     });
-  } else {
-    res.status(400).json({
-      message: "Failed to register user",
-    });
-  }
-});
 
-export const loginUser = asyncHandler(async (req, res) => {
-  // console.log(req.user);
-  const { username, password } = req.body;
+    if (newUser) {
+      // create new JWT token
+      generateToken(res, newUser._id);
+      res.status(201).json({
+        message: "Registration successful",
+        user: {
+          id: newUser._id,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          username: newUser.username,
+          email: newUser.email,
+          jobTitle: newUser.jobTitle,
+          isFullTime: newUser.isFullTime,
+          tenure: newUser.tenure,
+          eCode: newUser.eCode,
+          isAdmin: true,
+          weekNum: newUser.weekNum,
+          // password: newUser.password,
+        },
+      });
+    } else {
+      res.status(400).json({
+        message: "Failed to register user",
+      });
+    }
+  }),
+];
 
-  const user = await User.findOne({ username });
+export const loginUser = [
+  body("username").notEmpty().withMessage("Username cannot be empty"),
+  body("password").notEmpty().withMessage("Password cannot be empty"),
 
-  if (user && (await user.matchPassword(password))) {
-    const token = generateToken(res, user._id);
+  asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
 
-    // ! update here
-    user.isLoggedIn = true;
-    await user.save();
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-    return res.status(201).json({
-      token,
-      message: "Login successful",
-      user: {
-        _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        username: user.username,
-        email: user.email,
-        jobTitle: user.jobTitle,
-        isFullTimeEmp: user.isFullTimeEmp,
-        tenure: user.tenure,
-        eCode: user.eCode,
-        isLoggedIn: user.isLoggedIn,
-      },
-    });
-  } else {
-    return res.status(400).json({ message: "Invalid credentials" });
-  }
-});
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+
+    if (user && (await user.matchPassword(password))) {
+      const token = generateToken(res, user._id);
+
+      user.isLoggedIn = true;
+      await user.save();
+
+      return res.status(201).json({
+        token,
+        message: "Login successful",
+        user: {
+          _id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          username: user.username,
+          email: user.email,
+          jobTitle: user.jobTitle,
+          isFullTimeEmp: user.isFullTimeEmp,
+          tenure: user.tenure,
+          eCode: user.eCode,
+          isLoggedIn: user.isLoggedIn,
+        },
+      });
+    } else {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+  }),
+];
 
 export const logoutUser = asyncHandler(async (req, res) => {
   const user = req.user;
@@ -167,14 +193,18 @@ export const updateProfile = asyncHandler(async (req, res) => {
   //   return res.status(400).json({ errors });
   // }
   //
+  // TODO => IMPLEMENT VALIDATION MIDDLEWARE (CHECK CHATGPT)
+
   user.firstName = req.body.firstName || user.firstName;
   user.lastName = req.body.lastName || user.lastName;
   user.username = req.body.username || user.username;
   user.email = req.body.email || user.email;
   user.eCode = req.body.eCode || user.eCode;
   user.jobTitle = req.body.jobTitle || user.jobTitle;
-  user.isFullTime = req.body.isFullTime || user.isFullTime;
   user.tenure = req.body.tenure || user.tenure;
+  if (req.body.hasOwnProperty("isFullTime")) {
+    user.isFullTime = req.body.isFullTime;
+  }
 
   if (req.body.password) {
     user.password = req.body.password;
@@ -321,7 +351,8 @@ export const getActiveUserData = asyncHandler(async (req, res) => {
       isLoggedIn: req.user.isLoggedIn,
     });
   } else {
-    res.status(401).json({
+    console.log("first");
+    res.status(400).json({
       message: "User not found",
     });
   }
