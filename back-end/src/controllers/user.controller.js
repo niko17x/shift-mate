@@ -99,8 +99,8 @@ export const registerUser = [
 ];
 
 export const loginUser = [
-  body("username").notEmpty().withMessage("Username cannot be empty"),
-  body("password").notEmpty().withMessage("Password cannot be empty"),
+  body("username").trim().notEmpty().withMessage("Username cannot be empty"),
+  body("password").trim().notEmpty().withMessage("Password cannot be empty"),
 
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
@@ -172,59 +172,76 @@ export const userProfile = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "User profile succesfully loaded", user });
 });
 
-export const updateProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.userId);
+export const updateProfile = [
+  body("firstName").trim().notEmpty().withMessage("This field is required"),
+  body("lastName").trim().notEmpty().withMessage("This field is required"),
+  body("username").trim().notEmpty().withMessage("This field is required"),
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("This field is required")
+    .isEmail()
+    .withMessage("Input must be in email format")
+    .bail()
+    .custom(async (value) => {
+      const emailExists = await User.findOne({ email: value });
+      if (emailExists) {
+        throw new Error("Email already exists");
+      }
+    }),
+  body("eCode")
+    .trim()
+    .notEmpty()
+    .withMessage("This field is required")
+    .isLength(5)
+    .bail()
+    .withMessage("Ecode must contain 5 characters"),
+  body("jobTitle").trim().notEmpty().withMessage("This field is required"),
+  body("tenure")
+    .trim()
+    .notEmpty()
+    .withMessage("This field is required")
+    .bail()
+    .isInt()
+    .withMessage("Input must contain only numbers"),
 
-  if (!user) {
-    res.status(400).json({ message: "Failed to retrieve user profile" });
-  }
-  //!
-  // const { email } = req.body;
-  // const errors = [];
+  asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.userId);
 
-  // const emailExists = await User.findOne({ email });
-  // if (emailExists) {
-  //   // "field" property allows which input has error:
-  //   errors.push({ field: "email", message: "Email already exists" });
-  // }
+    if (!user) {
+      res.status(400).json({ message: "Failed to retrieve user profile" });
+    }
 
-  // if (errors.length > 0) {
-  //   console.log(errors);
-  //   return res.status(400).json({ errors });
-  // }
-  //
-  // TODO => IMPLEMENT VALIDATION MIDDLEWARE (CHECK CHATGPT)
+    user.firstName = req.body.firstName || user.firstName;
+    user.lastName = req.body.lastName || user.lastName;
+    user.username = req.body.username || user.username;
+    user.email = req.body.email || user.email;
+    user.eCode = req.body.eCode || user.eCode;
+    user.jobTitle = req.body.jobTitle || user.jobTitle;
+    user.tenure = req.body.tenure || user.tenure;
+    if (req.body.hasOwnProperty("isFullTime")) {
+      user.isFullTime = req.body.isFullTime;
+    }
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
 
-  user.firstName = req.body.firstName || user.firstName;
-  user.lastName = req.body.lastName || user.lastName;
-  user.username = req.body.username || user.username;
-  user.email = req.body.email || user.email;
-  user.eCode = req.body.eCode || user.eCode;
-  user.jobTitle = req.body.jobTitle || user.jobTitle;
-  user.tenure = req.body.tenure || user.tenure;
-  if (req.body.hasOwnProperty("isFullTime")) {
-    user.isFullTime = req.body.isFullTime;
-  }
+    const updatedUser = await user.save();
 
-  if (req.body.password) {
-    user.password = req.body.password;
-  }
-
-  const updatedUser = await user.save();
-
-  res.status(200).json({
-    message: "Updated profile successfully",
-    _id: updatedUser._id,
-    firstName: updatedUser.firstName,
-    lastName: updatedUser.lastName,
-    username: updatedUser.username,
-    email: updatedUser.email,
-    eCode: updatedUser.eCode,
-    jobTitle: updatedUser.jobTitle,
-    isFullTime: updatedUser.isFullTime,
-    tenure: updatedUser.tenure,
-  });
-});
+    res.status(200).json({
+      message: "Updated profile successfully",
+      _id: updatedUser._id,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      eCode: updatedUser.eCode,
+      jobTitle: updatedUser.jobTitle,
+      isFullTime: updatedUser.isFullTime,
+      tenure: updatedUser.tenure,
+    });
+  }),
+];
 
 export const users = asyncHandler(async (req, res) => {
   const users = await User.find();
