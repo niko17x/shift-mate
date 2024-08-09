@@ -49,8 +49,9 @@ if (rootElement) {
 
     // <div>
     //   <UserProvider>
-    //     <RouterProvider router={router} />
-    //     <ToastContainer autoClose={1500} />
+    //     <AuthContextProvider>
+    //       <RouterProvider router={router} />
+    //     </AuthContextProvider>
     //   </UserProvider>
     // </div>
   );
