@@ -204,6 +204,15 @@ export const updateProfile = [
     .bail()
     .isInt()
     .withMessage("Input must contain only numbers"),
+  body("newPassword")
+    .optional()
+    .trim()
+    .isLength({ min: 8 })
+    .withMessage("Password must contain at least 8 characters"),
+
+  // 1. Input password matches previous password.
+  // 2. If match, update current password to new password.
+  // 3. If no match, return
 
   asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.userId);
@@ -211,6 +220,8 @@ export const updateProfile = [
     if (!user) {
       res.status(400).json({ message: "Failed to retrieve user profile" });
     }
+
+    const { password, newPassword } = req.body;
 
     user.firstName = req.body.firstName || user.firstName;
     user.lastName = req.body.lastName || user.lastName;
@@ -222,11 +233,19 @@ export const updateProfile = [
     if (req.body.hasOwnProperty("isFullTime")) {
       user.isFullTime = req.body.isFullTime;
     }
-    if (req.body.password) {
-      user.password = req.body.password;
+    if (password && newPassword) {
+      if (await user.matchPassword(password)) {
+        user.password = newPassword;
+      } else {
+        return res.status(400).json({
+          message: "Current password is invalid",
+        });
+      }
     }
 
     const updatedUser = await user.save();
+
+    console.log("passed");
 
     res.status(200).json({
       message: "Updated profile successfully",
