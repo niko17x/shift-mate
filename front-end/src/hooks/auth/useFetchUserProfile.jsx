@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 
 const useFetchUserProfile = (userId) => {
   const [profileData, setProfileData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
+      setError(null);
       setIsLoading(true);
       try {
         const response = await fetch(`/api/user/profile/${userId}`, {
@@ -15,21 +16,21 @@ const useFetchUserProfile = (userId) => {
             "Content-Type": "application/json",
           },
         });
-
-        if (response.ok) {
-          const data = await response.json();
-          setProfileData(data.user);
-        } else {
-          setError("Failed to fetch user profile");
+        const data = await response.json();
+        if (!response.ok) {
+          setIsLoading(false);
+          setError(data);
+          throw new Error(data.message);
         }
+        setProfileData(data.user);
+        setIsLoading(false);
       } catch (err) {
-        setError(err.message);
-      } finally {
+        setError({ message: err.message });
         setIsLoading(false);
       }
     };
 
-    if (userId) fetchUserProfile();
+    fetchUserProfile();
   }, [userId]);
 
   return { profileData, isLoading, error };
