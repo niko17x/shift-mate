@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import useFetchUserProfile from "../hooks/auth/useFetchUserProfile";
-import usePasswordValidation from "../hooks/auth/usePasswordValidation";
 import { useEffect, useState } from "react";
 import Loader from "../components/common/Loader";
 import useFetchUpdateUserProfile from "../hooks/auth/useFetchUpdateUserProfile";
@@ -8,47 +7,39 @@ import { toast } from "react-toastify";
 
 const ProfilePage = () => {
   const { id } = useParams();
-  const { validatePasswords } = usePasswordValidation();
   const { profileData, isLoading } = useFetchUserProfile(id);
   const { updateUserProfile } = useFetchUpdateUserProfile();
   const [profileDataForm, setProfileDataForm] = useState(null);
+  const [allowSave, setAllowSave] = useState(false);
 
   useEffect(() => {
     if (profileData) {
-      setProfileDataForm({
-        firstName: profileData.firstName,
-        lastName: profileData.lastName,
-        username: profileData.username,
-        email: profileData.email,
-        jobTitle: profileData.jobTitle.toLowerCase(),
-        eCode: profileData.eCode,
-        tenure: profileData.tenure,
-        isFullTime: profileData.isFullTime,
+      setProfileDataForm((prevForm) => ({
+        ...prevForm,
+        ...profileData,
         password: "",
-        confirmPassword: "",
-      });
+        newPassword: "",
+      }));
     }
   }, [profileData]);
 
   const handleFormData = (e) => {
     const { name, value } = e.target;
 
+    // Determine the new value, considering special cases like "isFullTime"
+    const newValue = name === "isFullTime" ? value === "full" : value;
+
+    // Update the form state with the new value
     setProfileDataForm((prevState) => ({
       ...prevState,
-      [name]: name === "isFullTime" ? value === "full" : value,
+      [name]: newValue,
     }));
 
-    // console.log(profileDataForm);
+    setAllowSave(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (profileDataForm.password) {
-      if (!validatePasswords(profileDataForm)) {
-        return;
-      }
-    }
 
     try {
       await updateUserProfile(id, profileDataForm);
@@ -62,10 +53,13 @@ const ProfilePage = () => {
     }
   };
 
+  if (!profileData || !profileDataForm) {
+    return <Loader loading={isLoading} />;
+  }
+
   return (
     <div className="register-page container box">
       <h1 className="title is-1">Update Profile</h1>
-
       {isLoading ? (
         <Loader loading={isLoading} />
       ) : (
@@ -77,7 +71,7 @@ const ProfilePage = () => {
                 className={`input`}
                 type="text"
                 placeholder="John"
-                value={profileDataForm ? profileDataForm.firstName : ""}
+                value={profileDataForm.firstName}
                 name="firstName"
                 onChange={handleFormData}
               />
@@ -91,7 +85,7 @@ const ProfilePage = () => {
                 className={`input`}
                 type="text"
                 placeholder="Doe"
-                value={profileDataForm ? profileDataForm.lastName : ""}
+                value={profileDataForm.lastName}
                 name="lastName"
                 onChange={handleFormData}
               />
@@ -105,7 +99,7 @@ const ProfilePage = () => {
                 className={`input`}
                 type="text"
                 placeholder="johnDoe01"
-                value={profileDataForm ? profileDataForm.username : ""}
+                value={profileDataForm.username}
                 name="username"
                 onChange={handleFormData}
               />
@@ -119,7 +113,7 @@ const ProfilePage = () => {
                 className={`input`}
                 type="email"
                 placeholder="john_doe@email.com"
-                value={profileDataForm ? profileDataForm.email : ""}
+                value={profileDataForm.email}
                 name="email"
                 onChange={handleFormData}
               />
@@ -134,7 +128,7 @@ const ProfilePage = () => {
                 type="password"
                 placeholder="Password"
                 name="password"
-                value={profileDataForm ? profileDataForm.password : ""}
+                value={profileDataForm.password}
                 minLength="5"
                 onChange={handleFormData}
               />
@@ -147,9 +141,9 @@ const ProfilePage = () => {
               <input
                 className="input"
                 type="password"
-                placeholder="Confirm Password"
-                name="confirmPassword"
-                value={profileDataForm ? profileDataForm.confirmPassword : ""}
+                placeholder="New Password"
+                name="newPassword"
+                value={profileDataForm.newPassword}
                 minLength="5"
                 onChange={handleFormData}
               />
@@ -163,7 +157,7 @@ const ProfilePage = () => {
                 className={`input`}
                 type="number"
                 placeholder="10"
-                value={profileDataForm ? profileDataForm.tenure : ""}
+                value={profileDataForm.tenure}
                 name="tenure"
                 onChange={handleFormData}
               />
@@ -179,7 +173,7 @@ const ProfilePage = () => {
                 placeholder="E010J"
                 minLength={5}
                 maxLength={5}
-                value={profileDataForm ? profileDataForm.eCode : ""}
+                value={profileDataForm.eCode}
                 name="eCode"
                 onChange={handleFormData}
               />
@@ -192,7 +186,7 @@ const ProfilePage = () => {
               <div className="select">
                 <select
                   name="jobTitle"
-                  value={profileDataForm ? profileDataForm.jobTitle : ""}
+                  value={profileDataForm.jobTitle}
                   onChange={handleFormData}
                 >
                   <option value="">Select dropdown</option>
@@ -214,11 +208,7 @@ const ProfilePage = () => {
                 <select
                   name="isFullTime"
                   onChange={handleFormData}
-                  value={
-                    profileDataForm && profileDataForm.isFullTime
-                      ? "full"
-                      : "part"
-                  }
+                  value={profileDataForm.isFullTime ? "full" : "part"}
                 >
                   <option value="full">Full Time</option>
                   <option value="part">Part Time</option>
@@ -229,13 +219,17 @@ const ProfilePage = () => {
 
           <div className="field is-grouped">
             <div className="control">
-              <button className="button is-link" type="submit">
+              <button
+                className="button is-link"
+                type="submit"
+                disabled={!allowSave}
+              >
                 Save
               </button>
             </div>
           </div>
         </form>
-      )}
+      )}{" "}
     </div>
   );
 };
