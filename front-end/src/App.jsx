@@ -7,7 +7,7 @@ const App = () => {
     <>
       <Navbar />
       <Outlet />
-      <ToastContainer autoClose={1500} position="top-center" />
+      <ToastContainer autoClose={1800} position="top-center" />
     </>
   );
 };
