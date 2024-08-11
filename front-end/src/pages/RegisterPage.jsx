@@ -1,12 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import useFetchRegisterUser from "../hooks/auth/useFetchRegisterUser";
 import usePasswordValidation from "../hooks/auth/usePasswordValidation";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import handleRegisterInputErrors from "../utils/handleRegisterInputErrors";
-
-// todo => add loading state
-// todo => fix confirm password input error handling
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -21,10 +18,15 @@ const RegisterPage = () => {
     tenure: "",
     eCode: "",
   });
+
+  const [passwordMatchValid, setPasswordMatchValid] = useState(true);
+  const [confirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
   const { registerUser, errors } = useFetchRegisterUser();
   const { validatePasswords } = usePasswordValidation(formData);
   const { getInputClass, getErrorMessageText } =
     handleRegisterInputErrors(errors);
+
+  const navigate = useNavigate();
 
   const handleFormData = (e) => {
     const { name, value } = e.target;
@@ -38,32 +40,24 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    validatePasswords(formData);
+    const { isConfirmPasswordEmpty, isPasswordsMatch } =
+      validatePasswords(formData);
 
-    try {
-      const { confirmPassword, ...modifiedFormData } = formData;
-      modifiedFormData.isFullTime = formData.isFullTime === "full";
+    setIsConfirmPasswordValid(!isConfirmPasswordEmpty);
+    setPasswordMatchValid(isPasswordsMatch);
 
-      const isRegisterSuccess = await registerUser(modifiedFormData);
+    formData.isFullTime = formData.isFullTime === "full";
 
-      if (isRegisterSuccess) {
-        setFormData({
-          firstName: "",
-          lastName: "",
-          username: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          jobTitle: "",
-          isFullTime: "",
-          tenure: "",
-          eCode: "",
-        });
-      }
-    } catch (error) {
-      console.log(error.message);
-      toast.error("Failed to register user", {
-        toastId: "handle-submit-fail",
+    const isRegisterSuccess = await registerUser(formData);
+
+    if (isRegisterSuccess) {
+      toast.success("Registration successful", {
+        toastId: "register-user-success",
+      });
+      navigate("/");
+    } else {
+      toast.error("Please complete all fields", {
+        toastId: "register-user-fail",
       });
     }
   };
@@ -133,7 +127,9 @@ const RegisterPage = () => {
           <label className="label">Password</label>
           <div className="control">
             <input
-              className={`input ${getInputClass("password")}`}
+              className={`input ${getInputClass("password")} ${
+                !passwordMatchValid ? "is-danger" : ""
+              }`}
               type="password"
               placeholder="Password"
               name="password"
@@ -141,14 +137,19 @@ const RegisterPage = () => {
               value={formData.password || ""}
               onChange={handleFormData}
             />
+            <p className="help is-danger">{getErrorMessageText("password")}</p>
+            <p className="help is-danger">{`${
+              !passwordMatchValid ? "Passwords do not match" : ""
+            }`}</p>
           </div>
-          <p className="help is-danger">{getErrorMessageText("password")}</p>
         </div>
         <div className="field">
           <label className="label">Confirm Password</label>
           <div className="control">
             <input
-              className="input"
+              className={`input ${
+                !confirmPasswordValid || !passwordMatchValid ? "is-danger" : ""
+              }`}
               type="password"
               placeholder="Confirm Password"
               name="confirmPassword"
@@ -156,6 +157,9 @@ const RegisterPage = () => {
               value={formData.confirmPassword || ""}
               onChange={handleFormData}
             />
+            <p className="help is-danger">{`${
+              !confirmPasswordValid ? "Confirm password is required" : ""
+            }`}</p>
           </div>
         </div>
         <div className="field">
@@ -179,8 +183,8 @@ const RegisterPage = () => {
               className={`input ${getInputClass("eCode")}`}
               type="text"
               placeholder="E010J"
-              minLength={5}
-              maxLength={5}
+              // minLength={5}
+              // maxLength={5}
               name="eCode"
               value={formData.eCode || ""}
               onChange={handleFormData}
@@ -245,3 +249,5 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
+
+// TODO => isFullTime is showing UI warning when empty but toast error is not being displayed.
