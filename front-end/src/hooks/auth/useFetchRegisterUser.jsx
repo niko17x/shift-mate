@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { useAuthContext } from "./useAuthContext";
 
 const useFetchRegisterUser = () => {
@@ -7,8 +6,9 @@ const useFetchRegisterUser = () => {
   const { dispatch } = useAuthContext();
 
   const registerUser = async (formData) => {
+    setErrors([]);
+
     try {
-      setErrors([]);
       const response = await fetch("/api/user/register", {
         method: "POST",
         headers: {
@@ -17,22 +17,19 @@ const useFetchRegisterUser = () => {
         body: JSON.stringify(formData),
       });
 
-      // console.log(formData);
+      const data = await response.json();
 
       if (!response.ok) {
-        const errorData = await response.json();
-        setErrors(errorData.errors || []);
-
+        setErrors(data.errors || ["Registration failed. Fetch request error"]);
         return false;
-      } else {
-        toast.success("Registration successful!", {
-          toastId: "response-success",
-        });
-        dispatch({ type: "LOGIN" });
-        return true;
       }
+
+      const { _id, username } = data.user;
+      dispatch({ type: "LOGIN", payload: { _id, username } });
+
+      return true;
     } catch (error) {
-      console.log(`Failed to register user: ${error.message}`);
+      setErrors(["Registration fetch request has failed"]);
       return false;
     }
   };
@@ -41,3 +38,5 @@ const useFetchRegisterUser = () => {
 };
 
 export default useFetchRegisterUser;
+
+// ! Read about throw new error vs returning false on chatgpt =>
