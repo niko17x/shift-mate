@@ -8,8 +8,8 @@ const Navbar = () => {
   let username, _id;
 
   try {
-    const activeUser = JSON.parse(localStorage.getItem("user") ?? "{}");
-    ({ username, _id } = activeUser);
+    const isUserLoggedIn = JSON.parse(localStorage.getItem("user") ?? "{}");
+    ({ username, _id } = isUserLoggedIn);
   } catch (error) {
     console.error("Failed to parse user data:", error);
   }
