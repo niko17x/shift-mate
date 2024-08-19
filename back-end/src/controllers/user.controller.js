@@ -48,8 +48,6 @@ export const registerUser = [
       weekNum,
     } = req.body;
 
-    // TODO => 'tenure' field is populating twice when logging in controller. Note that 'isFullTime' will never return an error since it has a default value of either false or true which is a '.notEmpty()' value.
-
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -76,7 +74,7 @@ export const registerUser = [
       res.status(201).json({
         message: "Registration successful",
         user: {
-          id: newUser._id,
+          _id: newUser._id,
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           username: newUser.username,
