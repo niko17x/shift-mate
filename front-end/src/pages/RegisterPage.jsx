@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import useFetchRegisterUser from "../hooks/auth/useFetchRegisterUser";
 import usePasswordValidation from "../hooks/auth/usePasswordValidation";
@@ -33,7 +33,7 @@ const RegisterPage = () => {
 
     setFormData((prevState) => ({
       ...prevState,
-      [name]: name === "isFullTime" ? value === "Full Time" : value,
+      [name]: value,
     }));
   };
 
@@ -46,9 +46,9 @@ const RegisterPage = () => {
     setIsConfirmPasswordValid(!isConfirmPasswordEmpty);
     setPasswordMatchValid(isPasswordsMatch);
 
-    formData.isFullTime = formData.isFullTime === "full";
-
     const isRegisterSuccess = await registerUser(formData);
+
+    console.log(formData);
 
     if (isRegisterSuccess) {
       toast.success("Registration successful", {
@@ -183,8 +183,6 @@ const RegisterPage = () => {
               className={`input ${getInputClass("eCode")}`}
               type="text"
               placeholder="E010J"
-              // minLength={5}
-              // maxLength={5}
               name="eCode"
               value={formData.eCode || ""}
               onChange={handleFormData}
@@ -202,17 +200,18 @@ const RegisterPage = () => {
                 onChange={handleFormData}
               >
                 <option value="">Select dropdown</option>
-                <option value="Full Time">Sales</option>
-                <option value="Part Time">Software</option>
-                <option value="Part Time">Management</option>
-                <option value="Part Time">Operations</option>
-                <option value="Part Time">Administration</option>
-                <option value="Part Time">Other</option>
+                <option value="sales">Sales</option>
+                <option value="software">Software</option>
+                <option value="management">Management</option>
+                <option value="operations">Operations</option>
+                <option value="administration">Administration</option>
+                <option value="other">Other</option>
               </select>
             </div>
           </div>
           <p className="help is-danger">{getErrorMessageText("jobTitle")}</p>
         </div>
+
         <div className="field">
           <label className="label">Employee Time</label>
           <div className="control">
@@ -223,13 +222,25 @@ const RegisterPage = () => {
                 onChange={handleFormData}
               >
                 <option value="default">Select dropdown</option>
-                <option value="full">Full Time</option>
-                <option value="part">Part Time</option>
+                <option value="true">Full Time</option>
+                <option value="false">Part Time</option>
               </select>
             </div>
           </div>
           <p className="help is-danger">{getErrorMessageText("isFullTime")}</p>
         </div>
+
+        {/* <div className="radios">
+          <label className="radio">
+            <input type="radio" name="full-time" />
+            Full Time
+          </label>
+          <label className="radio">
+            <input type="radio" name="part-time" />
+            Part Time
+          </label>
+        </div> */}
+
         <div className="field is-grouped">
           <div className="control">
             <button className="button is-link" type="submit">
