@@ -3,28 +3,26 @@
 // Option to display all current employees and their data (pop-up modal?)
 // passwords not required.
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import handleRegisterInputErrors from "../utils/handleRegisterInputErrors";
+import useFetchCreateEmployee from "../hooks/createEmployee.hooks/useFetchCreateEmployee";
 
 const CreateEmployeePage = () => {
+  const { isLoading, errors, createEmployee } = useFetchCreateEmployee();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    username: "",
     email: "",
-    password: "",
-    confirmPassword: "",
     jobTitle: "",
     isFullTime: "",
     tenure: "",
     eCode: "",
   });
 
-  // const { getInputClass, getErrorMessageText } =
-  //   handleRegisterInputErrors(errors);
-
-  const navigate = useNavigate();
+  const { getInputClass, getErrorMessageText } =
+    handleRegisterInputErrors(errors);
 
   const handleFormData = (e) => {
     const { name, value } = e.target;
@@ -38,12 +36,23 @@ const CreateEmployeePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // const isRegisterSuccess = await createEmployee(formData);
+    const result = await createEmployee(formData);
+
+    if (!result.success) {
+      toast.error(result.error, {
+        toastId: "create-employee-fail",
+      });
+      return;
+    }
+
+    toast.success("Employee created successfully", {
+      toastId: "create-employee-success",
+    });
   };
 
   return (
     <div className="register-page container box">
-      <h1 className="title is-1">Register</h1>
+      <h1 className="title is-1">Create Employee</h1>
 
       <form onSubmit={handleSubmit}>
         <div className="field">
@@ -111,6 +120,7 @@ const CreateEmployeePage = () => {
               placeholder="E010J"
               name="eCode"
               value={formData.eCode || ""}
+              maxLength={5}
               onChange={handleFormData}
             />
             <p className="help is-danger">{getErrorMessageText("eCode")}</p>
