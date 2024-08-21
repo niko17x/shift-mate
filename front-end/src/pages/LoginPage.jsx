@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import useFetchLoginUser from "../hooks/auth/useFetchLoginUser";
+import useFetchLoginUser from "../hooks/auth.hooks/useFetchLoginUser";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "bulma/css/bulma.min.css";
-import useFetchLogout from "../../hooks/auth/useFetchLogout";
+import useFetchLogout from "../../hooks/auth.hooks/useFetchLogout";
 
 const Navbar = () => {
   const { logout } = useFetchLogout();

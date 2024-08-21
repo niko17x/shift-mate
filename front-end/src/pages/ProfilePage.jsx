@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
-import useFetchUserProfile from "../hooks/auth/useFetchUserProfile";
+import useFetchUserProfile from "../hooks/auth.hooks/useFetchUserProfile";
 import { useEffect, useState } from "react";
 import Loader from "../components/common/Loader";
-import useFetchUpdateUserProfile from "../hooks/auth/useFetchUpdateUserProfile";
+import useFetchUpdateUserProfile from "../hooks/auth.hooks/useFetchUpdateUserProfile";
 import { toast } from "react-toastify";
 
 const ProfilePage = () => {

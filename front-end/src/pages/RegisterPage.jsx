@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import useFetchRegisterUser from "../hooks/auth/useFetchRegisterUser";
-import usePasswordValidation from "../hooks/auth/usePasswordValidation";
+import useFetchRegisterUser from "../hooks/auth.hooks/useFetchRegisterUser";
+import usePasswordValidation from "../hooks/auth.hooks/usePasswordValidation";
 import { Link, useNavigate } from "react-router-dom";
 import handleRegisterInputErrors from "../utils/handleRegisterInputErrors";
 
