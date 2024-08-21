@@ -164,26 +164,28 @@ export const updateProfile = [
   body("firstName").trim().notEmpty().withMessage("This field is required"),
   body("lastName").trim().notEmpty().withMessage("This field is required"),
   body("username").trim().notEmpty().withMessage("This field is required"),
-  body("email")
-    .trim()
-    .notEmpty()
-    .withMessage("This field is required")
-    .isEmail()
-    .withMessage("Input must be in email format")
-    .bail()
-    .custom(async (value) => {
-      const emailExists = await User.findOne({ email: value });
-      if (emailExists) {
-        throw new Error("Email already exists");
-      }
-    }),
-  body("eCode")
-    .trim()
-    .notEmpty()
-    .withMessage("This field is required")
-    .isLength(5)
-    .bail()
-    .withMessage("Ecode must contain 5 characters"),
+  // Email in client is disabled:
+  // body("email")
+  //   .trim()
+  //   .notEmpty()
+  //   .withMessage("This field is required")
+  //   .isEmail()
+  //   .withMessage("Input must be in email format")
+  //   .bail()
+  //   .custom(async (value) => {
+  //     const emailExists = await User.findOne({ email: value });
+  //     if (emailExists) {
+  //       throw new Error("Email already exists");
+  //     }
+  //   }),
+  // ECode in client is disabled:
+  // body("eCode")
+  //   .trim()
+  //   .notEmpty()
+  //   .withMessage("This field is required")
+  //   .isLength(5)
+  //   .bail()
+  //   .withMessage("Ecode must contain 5 characters"),
   body("jobTitle").trim().notEmpty().withMessage("This field is required"),
   body("tenure")
     .trim()
@@ -197,10 +199,6 @@ export const updateProfile = [
     .trim()
     .isLength({ min: 8 })
     .withMessage("Password must contain at least 8 characters"),
-
-  // 1. Input password matches previous password.
-  // 2. If match, update current password to new password.
-  // 3. If no match, return
 
   asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.userId);
@@ -218,22 +216,23 @@ export const updateProfile = [
     user.eCode = req.body.eCode || user.eCode;
     user.jobTitle = req.body.jobTitle || user.jobTitle;
     user.tenure = req.body.tenure || user.tenure;
-    if (req.body.hasOwnProperty("isFullTime")) {
-      user.isFullTime = req.body.isFullTime;
-    }
+    user.isFullTime = req.body.isFullTime || user.isFullTime;
     if (password && newPassword) {
       if (await user.matchPassword(password)) {
         user.password = newPassword;
       } else {
+        console.log("current password is invalid");
         return res.status(400).json({
           message: "Current password is invalid",
         });
       }
+    } else {
+      return res.status(400).json({
+        message: "Please fill in password input fields",
+      });
     }
 
     const updatedUser = await user.save();
-
-    console.log("passed");
 
     res.status(200).json({
       message: "Updated profile successfully",

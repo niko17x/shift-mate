@@ -3,11 +3,9 @@ import { useState } from "react";
 const useFetchUpdateUserProfile = () => {
   const [updatedProfileData, setUpdatedProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const updateUserProfile = async (userId, profileDataForm) => {
     setIsLoading(true);
-    setError(null);
 
     try {
       const response = await fetch(`/api/user/update-profile/${userId}`, {
@@ -21,22 +19,23 @@ const useFetchUpdateUserProfile = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data);
-        setIsLoading(false);
-        throw new Error(data.message);
+        const errorMessage =
+          data.message || "An unexpected error has occurred.";
+        return { success: false, error: errorMessage };
       }
 
       setUpdatedProfileData(data);
-      setIsLoading(false);
-      return data;
+      return { success: true, data };
     } catch (err) {
-      setError({ message: err.message });
+      const fallbackError =
+        "An unexpected error has occurred. Please try again.";
+      return { success: false, error: fallbackError };
+    } finally {
       setIsLoading(false);
-      throw err;
     }
   };
 
-  return { updateUserProfile, updatedProfileData, error, isLoading };
+  return { updateUserProfile, updatedProfileData, isLoading };
 };
 
 export default useFetchUpdateUserProfile;

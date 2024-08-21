@@ -26,13 +26,9 @@ const ProfilePage = () => {
   const handleFormData = (e) => {
     const { name, value } = e.target;
 
-    // Determine the new value, considering special cases like "isFullTime"
-    const newValue = name === "isFullTime" ? value === "full" : value;
-
-    // Update the form state with the new value
     setProfileDataForm((prevState) => ({
       ...prevState,
-      [name]: newValue,
+      [name]: value,
     }));
 
     setAllowSave(true);
@@ -41,16 +37,29 @@ const ProfilePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      await updateUserProfile(id, profileDataForm);
-      toast.success("Successfully updated profile", {
-        toastId: "profile-update-success",
+    const { password, newPassword } = profileDataForm;
+
+    if ((password && !newPassword) || (!password && newPassword)) {
+      toast.error("Please fill out missing password fields", {
+        toastId: "new-password-fail",
       });
-    } catch (err) {
-      toast.error("Failed to submit profile changes", {
+      return;
+    }
+
+    const updateResult = await updateUserProfile(id, profileDataForm);
+
+    if (!updateResult.success) {
+      toast.error(updateResult.error, {
         toastId: "profile-update-fail",
       });
+      return;
     }
+
+    toast.success("Successfully updated profile", {
+      toastId: "profile-update-success",
+    });
+    profileDataForm.password = "";
+    profileDataForm.newPassword = "";
   };
 
   if (!profileData || !profileDataForm) {
@@ -116,6 +125,7 @@ const ProfilePage = () => {
                 value={profileDataForm.email}
                 name="email"
                 onChange={handleFormData}
+                disabled={true}
               />
             </div>
           </div>
@@ -129,7 +139,6 @@ const ProfilePage = () => {
                 placeholder="Password"
                 name="password"
                 value={profileDataForm.password}
-                minLength="5"
                 onChange={handleFormData}
               />
             </div>
@@ -144,7 +153,7 @@ const ProfilePage = () => {
                 placeholder="New Password"
                 name="newPassword"
                 value={profileDataForm.newPassword}
-                minLength="5"
+                minLength="8"
                 onChange={handleFormData}
               />
             </div>
@@ -175,6 +184,7 @@ const ProfilePage = () => {
                 maxLength={5}
                 value={profileDataForm.eCode}
                 name="eCode"
+                disabled={true}
                 onChange={handleFormData}
               />
             </div>
@@ -208,10 +218,10 @@ const ProfilePage = () => {
                 <select
                   name="isFullTime"
                   onChange={handleFormData}
-                  value={profileDataForm.isFullTime ? "full" : "part"}
+                  value={profileDataForm.isFullTime}
                 >
-                  <option value="full">Full Time</option>
-                  <option value="part">Part Time</option>
+                  <option value="true">Full Time</option>
+                  <option value="false">Part Time</option>
                 </select>
               </div>
             </div>
