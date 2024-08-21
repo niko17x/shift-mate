@@ -217,6 +217,7 @@ export const updateProfile = [
     user.jobTitle = req.body.jobTitle || user.jobTitle;
     user.tenure = req.body.tenure || user.tenure;
     user.isFullTime = req.body.isFullTime || user.isFullTime;
+    console.log(req.body.password, req.body.newPassword);
     if (password && newPassword) {
       if (await user.matchPassword(password)) {
         user.password = newPassword;
@@ -226,10 +227,6 @@ export const updateProfile = [
           message: "Current password is invalid",
         });
       }
-    } else {
-      return res.status(400).json({
-        message: "Please fill in password input fields",
-      });
     }
 
     const updatedUser = await user.save();
