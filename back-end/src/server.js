@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 import userRoute from "../src/routes/user.route.js";
 import scheduleRoute from "../src/routes/schedule.route.js";
+import employeeRoute from "../src/routes/employee.route.js";
 import { errorHandler, notFound } from "./middlewares/error.middleware.js";
 import cors from "cors";
 
@@ -26,6 +27,7 @@ app.use(cookieParser());
 
 app.use("/api/user", userRoute);
 app.use("/api/schedule", scheduleRoute);
+app.use("/api/employee", employeeRoute);
 
 app.use(notFound);
 app.use(errorHandler);
