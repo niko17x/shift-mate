@@ -6,7 +6,6 @@ import { body, validationResult } from "express-validator";
 export const registerUser = [
   body("firstName").trim().notEmpty().withMessage("First name is required"),
   body("lastName").trim().notEmpty().withMessage("Last name is required"),
-  body("username").trim().notEmpty().withMessage("Username is required"),
   body("email")
     .trim()
     .notEmpty()
@@ -37,7 +36,6 @@ export const registerUser = [
     const {
       firstName,
       lastName,
-      username,
       email,
       password,
       jobTitle,
@@ -58,7 +56,6 @@ export const registerUser = [
     const newUser = await User.create({
       firstName,
       lastName,
-      username,
       email,
       password,
       jobTitle,
@@ -78,7 +75,6 @@ export const registerUser = [
           _id: newUser._id,
           firstName: newUser.firstName,
           lastName: newUser.lastName,
-          username: newUser.username,
           email: newUser.email,
           jobTitle: newUser.jobTitle,
           isFullTime: newUser.isFullTime,
@@ -98,7 +94,7 @@ export const registerUser = [
 ];
 
 export const loginUser = [
-  body("username").trim().notEmpty().withMessage("Username cannot be empty"),
+  body("email").trim().notEmpty().withMessage("Email cannot be empty"),
   body("password").trim().notEmpty().withMessage("Password cannot be empty"),
 
   asyncHandler(async (req, res) => {
@@ -108,9 +104,9 @@ export const loginUser = [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
       const token = generateToken(res, user._id);
@@ -123,7 +119,6 @@ export const loginUser = [
           _id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
-          username: user.username,
           email: user.email,
           jobTitle: user.jobTitle,
           isFullTimeEmp: user.isFullTimeEmp,
@@ -132,7 +127,6 @@ export const loginUser = [
         },
       });
     } else {
-      console.log("first");
       return res.status(400).json({ message: "Invalid credentials" });
     }
   }),
@@ -164,7 +158,6 @@ export const userProfile = asyncHandler(async (req, res) => {
 export const updateProfile = [
   body("firstName").trim().notEmpty().withMessage("This field is required"),
   body("lastName").trim().notEmpty().withMessage("This field is required"),
-  body("username").trim().notEmpty().withMessage("This field is required"),
   // Email in client is disabled:
   // body("email")
   //   .trim()
@@ -212,7 +205,6 @@ export const updateProfile = [
 
     user.firstName = req.body.firstName || user.firstName;
     user.lastName = req.body.lastName || user.lastName;
-    user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
     user.eCode = req.body.eCode || user.eCode;
     user.jobTitle = req.body.jobTitle || user.jobTitle;
@@ -235,7 +227,6 @@ export const updateProfile = [
       _id: updatedUser._id,
       firstName: updatedUser.firstName,
       lastName: updatedUser.lastName,
-      username: updatedUser.username,
       email: updatedUser.email,
       eCode: updatedUser.eCode,
       jobTitle: updatedUser.jobTitle,
@@ -278,7 +269,6 @@ export const createUser = asyncHandler(async (req, res) => {
   const {
     firstName,
     lastName,
-    username,
     email,
     password,
     jobTitle,
@@ -299,7 +289,6 @@ export const createUser = asyncHandler(async (req, res) => {
   const newUser = await User.create({
     firstName,
     lastName,
-    username,
     email,
     password,
     jobTitle,
@@ -315,7 +304,6 @@ export const createUser = asyncHandler(async (req, res) => {
       id: newUser._id,
       firstName: newUser.firstName,
       lastName: newUser.lastName,
-      username: newUser.username,
       email: newUser.email,
       jobTitle: newUser.jobTitle,
       isFullTimeEmp: newUser.isFullTimeEmp,
@@ -361,7 +349,6 @@ export const getActiveUserData = asyncHandler(async (req, res) => {
       _id: req.user._id,
       firstName: req.user.firstName,
       lastName: req.user.lastName,
-      username: req.user.username,
       email: req.user.email,
       jobTitle: req.user.jobTitle,
       isFullTimeEmp: req.user.isFullTimeEmp,
