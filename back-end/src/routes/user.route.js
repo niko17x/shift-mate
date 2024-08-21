@@ -9,12 +9,14 @@ import {
   deleteUser,
   updateWeekNum,
   getActiveUserData,
+  createEmployee,
 } from "../controllers/user.controller.js";
 import protect from "../middlewares/protect.middleware.js";
 const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.post("/create-employee", createEmployee);
 router.get("/logout", protect, logoutUser);
 router.get("/profile/:id", userProfile);
 router.get("/users", users);
