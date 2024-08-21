@@ -51,6 +51,7 @@ export const registerUser = [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
+      console.log(errors);
       return res.status(400).json({ errors: errors.array() });
     }
 
@@ -374,3 +375,82 @@ export const getActiveUserData = asyncHandler(async (req, res) => {
     });
   }
 });
+
+export const createEmployee = [
+  body("firstName").trim().notEmpty().withMessage("First name is required"),
+  body("lastName").trim().notEmpty().withMessage("Last name is required"),
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .bail()
+    .isEmail()
+    .withMessage("Must be in email format")
+    .custom(async (value) => {
+      const emailExists = await User.findOne({ email: value });
+      if (emailExists) {
+        throw new Error("Email already exists");
+      }
+    }),
+  body("jobTitle").trim().notEmpty().withMessage("Please make a selection"),
+  body("isFullTime").trim().notEmpty().withMessage("Please make a selection"),
+  body("tenure").trim().notEmpty().withMessage("Tenure is required"),
+  body("eCode").trim().notEmpty().withMessage("ECODE is required"),
+  // ? How to handle isAdmin property for employee?
+  body("isAdmin").optional(),
+
+  asyncHandler(async (req, res) => {
+    const {
+      firstName,
+      lastName,
+      email,
+      jobTitle,
+      isFullTime,
+      tenure,
+      eCode,
+      isAdmin,
+      weekNum,
+    } = req.body;
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      console.log(errors);
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      email,
+      jobTitle,
+      isFullTime,
+      tenure,
+      eCode,
+      isAdmin: isAdmin || false,
+      weekNum: weekNum || null,
+    });
+
+    if (newUser) {
+      res.status(201).json({
+        message: "Employee created successfully",
+        user: {
+          _id: newUser._id,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          email: newUser.email,
+          jobTitle: newUser.jobTitle,
+          isFullTime: newUser.isFullTime,
+          tenure: newUser.tenure,
+          eCode: newUser.eCode,
+          isAdmin: true,
+          weekNum: newUser.weekNum,
+        },
+      });
+    } else {
+      res.status(400).json({
+        message: "Failed to register user",
+      });
+    }
+  }),
+];
