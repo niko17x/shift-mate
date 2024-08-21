@@ -26,13 +26,17 @@ const useFetchLoginuser = () => {
 
       if (!response.ok) {
         setError(data.message || "Login failed. Please try again.");
+        console.log(data.message);
         return false;
       }
 
-      const { _id, username } = data.user;
-      dispatch({ type: "LOGIN", payload: { _id, username } });
+      dispatch({
+        type: "LOGIN",
+        payload: { _id: data.user._id, username: data.user.username },
+      });
       return true;
     } catch (err) {
+      console.log(err);
       setError(err.message || "An unexpected error occurred.");
       return false;
     } finally {

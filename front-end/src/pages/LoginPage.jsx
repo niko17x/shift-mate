@@ -7,7 +7,7 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const { loginUser, error } = useFetchLoginUser();
+  const { loginUser } = useFetchLoginUser();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -27,8 +27,8 @@ const LoginPage = () => {
         toastId: "login-success",
       });
       navigate("/");
-    } else if (error) {
-      toast.error(error, {
+    } else {
+      toast.error("Failed to login", {
         toastId: "login-fail",
       });
     }

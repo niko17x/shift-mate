@@ -45,10 +45,6 @@ const userSchema = mongoose.Schema(
     weekNum: {
       type: Number,
     },
-    isLoggedIn: {
-      type: Boolean,
-      default: false,
-    },
   },
   { timestamps: true }
 );
