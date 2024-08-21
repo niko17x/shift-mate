@@ -114,12 +114,10 @@ export const loginUser = [
     if (user && (await user.matchPassword(password))) {
       const token = generateToken(res, user._id);
 
-      user.isLoggedIn = true;
       await user.save();
 
       return res.status(201).json({
         token,
-        message: "Login successful",
         user: {
           _id: user._id,
           firstName: user.firstName,
@@ -130,24 +128,16 @@ export const loginUser = [
           isFullTimeEmp: user.isFullTimeEmp,
           tenure: user.tenure,
           eCode: user.eCode,
-          isLoggedIn: user.isLoggedIn,
         },
       });
     } else {
+      console.log("first");
       return res.status(400).json({ message: "Invalid credentials" });
     }
   }),
 ];
 
 export const logoutUser = asyncHandler(async (req, res) => {
-  const user = req.user;
-
-  if (user) {
-    user.isLoggedIn = false;
-    await user.save();
-    console.log(user);
-  }
-
   res.cookie("jwt", "", {
     httpOnly: true,
     expires: new Date(1),
@@ -382,7 +372,6 @@ export const getActiveUserData = asyncHandler(async (req, res) => {
       isFullTimeEmp: req.user.isFullTimeEmp,
       tenure: req.user.tenure,
       eCode: req.user.eCode,
-      isLoggedIn: req.user.isLoggedIn,
     });
   } else {
     console.log("first");
