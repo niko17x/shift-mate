@@ -39,17 +39,17 @@ const Navbar = () => {
             Home
           </Link>
 
-          <Link className="navbar-item" to={"/scheduler"}>
-            Scheduler
-          </Link>
+          <Link className="navbar-item">About</Link>
 
           <div className="navbar-item has-dropdown is-hoverable">
-            <Link className="navbar-link">More</Link>
-
+            <Link className="navbar-link">Tools</Link>
             <div className="navbar-dropdown">
-              <Link className="navbar-item">About</Link>
-              <Link className="navbar-item">Contact</Link>
-              <Link className="navbar-item">Report an issue</Link>
+              <Link className="navbar-item" to={"/scheduler"}>
+                Scheduler
+              </Link>
+              <Link className="navbar-item" to={"/create-employee"}>
+                Create Employee
+              </Link>
             </div>
           </div>
         </div>
