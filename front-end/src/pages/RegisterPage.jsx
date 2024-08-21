@@ -9,7 +9,6 @@ const RegisterPage = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -94,20 +93,6 @@ const RegisterPage = () => {
             />
           </div>
           <p className="help is-danger">{getErrorMessageText("lastName")}</p>
-        </div>
-        <div className="field">
-          <label className="label">Username</label>
-          <div className="control">
-            <input
-              className={`input ${getInputClass("username")}`}
-              type="text"
-              placeholder="johnDoe01"
-              name="username"
-              value={formData.username || ""}
-              onChange={handleFormData}
-            />
-            <p className="help is-danger">{getErrorMessageText("username")}</p>
-          </div>
         </div>
         <div className="field">
           <label className="label">Email</label>
@@ -229,17 +214,6 @@ const RegisterPage = () => {
           </div>
           <p className="help is-danger">{getErrorMessageText("isFullTime")}</p>
         </div>
-
-        {/* <div className="radios">
-          <label className="radio">
-            <input type="radio" name="full-time" />
-            Full Time
-          </label>
-          <label className="radio">
-            <input type="radio" name="part-time" />
-            Part Time
-          </label>
-        </div> */}
 
         <div className="field is-grouped">
           <div className="control">
