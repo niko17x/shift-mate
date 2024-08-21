@@ -38,5 +38,3 @@ const useFetchRegisterUser = () => {
 };
 
 export default useFetchRegisterUser;
-
-// ! Read about throw new error vs returning false on chatgpt =>

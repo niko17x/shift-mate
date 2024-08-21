@@ -1,4 +1,4 @@
-// Utility functions for form error handling
+// Utility functions for form error handling in Register/Login/Create-Employee pages
 
 const handleRegisterInputErrors = (errors) => {
   const errorClasses = {};
