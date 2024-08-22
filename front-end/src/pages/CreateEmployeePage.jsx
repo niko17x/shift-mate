@@ -1,15 +1,13 @@
-// Page that allows current auth user (admin) to create a new employee.
-// Employee data will be used to display on scheduler.
-// Option to display all current employees and their data (pop-up modal?)
-// passwords not required.
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import handleRegisterInputErrors from "../utils/handleRegisterInputErrors";
 import useFetchCreateEmployee from "../hooks/createEmployee.hooks/useFetchCreateEmployee";
+import DisplayEmployees from "../components/employeePage/DisplayEmployees";
 
 const CreateEmployeePage = () => {
-  const { isLoading, errors, createEmployee } = useFetchCreateEmployee();
+  const [toggleModal, setToggleModal] = useState(false);
+  const { errors, createEmployee } = useFetchCreateEmployee();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -45,8 +43,17 @@ const CreateEmployeePage = () => {
       return;
     }
 
-    toast.success("Employee created successfully", {
+    toast.success(result.data, {
       toastId: "create-employee-success",
+    });
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      jobTitle: "",
+      isFullTime: "",
+      tenure: "",
+      eCode: "",
     });
   };
 
@@ -169,17 +176,19 @@ const CreateEmployeePage = () => {
         <div className="field is-grouped">
           <div className="control">
             <button className="button is-link" type="submit">
-              Register
+              Create
             </button>
-          </div>
-
-          <div className="control">
-            <Link to={"/login"}>
-              <button className="button is-ghost">Login</button>
-            </Link>
           </div>
         </div>
       </form>
+      {/* <div onClick={() => setOpenModal(true)}>
+        <p>View Employees</p>
+      </div> */}
+      <DisplayEmployees
+        toggleModal={toggleModal}
+        openModal={() => setToggleModal(true)}
+        closeModal={() => setToggleModal(false)}
+      />
     </div>
   );
 };
