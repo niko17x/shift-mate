@@ -1,4 +1,4 @@
-import expressAsyncHandler from "express-async-handler";
+import asyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 import User from "../models/user.model.js";
 import Employee from "../models/employee.model.js";
@@ -23,11 +23,23 @@ export const createEmployee = [
   body("jobTitle").trim().notEmpty().withMessage("Please make a selection"),
   body("isFullTime").trim().notEmpty().withMessage("Please make a selection"),
   body("tenure").trim().notEmpty().withMessage("Tenure is required"),
-  body("eCode").trim().notEmpty().withMessage("ECODE is required"),
+  body("eCode")
+    .trim()
+    .notEmpty()
+    .withMessage("ECODE is required")
+    .bail()
+    .custom(async (value) => {
+      const userEcodeExists = await User.findOne({ eCode: value });
+      const employeeEcodeExists = await Employee.findOne({ eCode: value });
+
+      if (userEcodeExists || employeeEcodeExists) {
+        throw new Error("ECODE already exists");
+      }
+    }),
   // ? How to handle isAdmin property for employee?
   body("isAdmin").optional(),
 
-  expressAsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const {
       firstName,
       lastName,
@@ -43,7 +55,6 @@ export const createEmployee = [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      console.log(errors);
       return res.status(400).json({
         errors: errors.array(),
         message: "All fields must be completed",
@@ -85,3 +96,15 @@ export const createEmployee = [
     }
   }),
 ];
+
+export const getAllEmployees = asyncHandler(async (req, res) => {
+  const allEmployees = await Employee.find();
+
+  if (allEmployees.length === 0) {
+    return res
+      .status(200)
+      .json({ message: "There are no employees available" });
+  }
+
+  res.status(200).json(allEmployees);
+});
