@@ -1,15 +1,24 @@
+import { useEffect, useState } from "react";
 import useFetchAllEmployees from "../../hooks/createEmployee.hooks/useFetchAllEmployees";
 import Loader from "../common/Loader";
 
 const DisplayEmployees = ({ toggleModal, closeModal, openModal }) => {
-  // const [employees, setEmployees] = useState([]);
-  const { isLoading, employees } = useFetchAllEmployees();
+  const [employeeList, setEmployeeList] = useState([]);
+  const { isLoading, fetchAllEmployees } = useFetchAllEmployees();
+
+  useEffect(() => {
+    const getEmployeeList = async () => {
+      const employees = await fetchAllEmployees();
+
+      if (employees) setEmployeeList(employees.data);
+    };
+
+    getEmployeeList();
+  }, [toggleModal]);
 
   if (isLoading) {
     return <Loader loading={isLoading} />;
   }
-
-  console.log(employees);
 
   return (
     <div className="display-employees">
@@ -19,11 +28,9 @@ const DisplayEmployees = ({ toggleModal, closeModal, openModal }) => {
       <div className={`modal ${toggleModal ? "is-active" : ""}`}>
         <div className="modal-background"></div>
         <div className="modal-content">
-          {/* <h1>Displaying employees</h1> */}
           <p className="title is-3">Employee List</p>
-          {/* Map and display employees here */}
-          {employees &&
-            employees.map((emp) => (
+          {employeeList &&
+            employeeList.map((emp) => (
               <div className="employee-list" key={emp._id}>
                 <p>
                   {emp.lastName}, <span>{emp.firstName}</span>{" "}
@@ -32,7 +39,6 @@ const DisplayEmployees = ({ toggleModal, closeModal, openModal }) => {
                 <p>{emp.jobTitle}</p>
                 <p>{emp.isFullTime}</p>
                 <p>{emp.tenure}</p>
-                <p>{emp.updatedAt}</p>
                 <p>{emp.eCode}</p>
                 <div className="divider"></div>
               </div>

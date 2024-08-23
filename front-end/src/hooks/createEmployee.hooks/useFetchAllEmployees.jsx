@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const useFetchAllEmployees = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,16 +24,13 @@ const useFetchAllEmployees = () => {
 
       setIsLoading(false);
       setEmployees(data);
+      return { data };
     } catch (error) {
       setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchAllEmployees();
-  }, []);
 
   return { isLoading, fetchAllEmployees, employees };
 };
