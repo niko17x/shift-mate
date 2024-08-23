@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import handleRegisterInputErrors from "../utils/handleRegisterInputErrors";
@@ -43,7 +43,7 @@ const CreateEmployeePage = () => {
       return;
     }
 
-    toast.success(result.data, {
+    toast.success("Employee created successfully", {
       toastId: "create-employee-success",
     });
     setFormData({
@@ -181,9 +181,7 @@ const CreateEmployeePage = () => {
           </div>
         </div>
       </form>
-      {/* <div onClick={() => setOpenModal(true)}>
-        <p>View Employees</p>
-      </div> */}
+
       <DisplayEmployees
         toggleModal={toggleModal}
         openModal={() => setToggleModal(true)}
