@@ -108,3 +108,17 @@ export const getAllEmployees = asyncHandler(async (req, res) => {
 
   res.status(200).json(allEmployees);
 });
+
+export const deleteEmployee = asyncHandler(async (req, res) => {
+  const result = await Employee.deleteOne({ _id: req.params.id });
+
+  if (result.deletedCount === 0) {
+    return res.status(400).json({
+      message: "Failed to delete employee",
+    });
+  }
+
+  res.status(200).json({
+    message: "Employee successfully deleted",
+  });
+});
