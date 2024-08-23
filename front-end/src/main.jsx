@@ -18,7 +18,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import UserProvider from "./context/UserContext.jsx";
 import { AuthContextProvider } from "./context/AuthContext.jsx";
-import CreateEmployeePage from "./pages/CreateEmployeePage.jsx";
+import ManageEmployeesPage from "./pages/ManageEmployeesPage.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,7 +27,7 @@ const router = createBrowserRouter(
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/scheduler" element={<SchedulerPage />} />
-      <Route path="/create-employee" element={<CreateEmployeePage />} />
+      <Route path="/create-employee" element={<ManageEmployeesPage />} />
       <Route path="/profile/:id" element={<ProfilePage />} />
     </Route>
   )
