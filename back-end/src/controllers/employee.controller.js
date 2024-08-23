@@ -122,3 +122,18 @@ export const deleteEmployee = asyncHandler(async (req, res) => {
     message: "Employee successfully deleted",
   });
 });
+
+export const employeeProfile = asyncHandler(async (req, res) => {
+  console.log("first");
+  const employee = await Employee.findOne({ _id: req.params.id });
+
+  console.log(employee);
+
+  if (!employee) {
+    return res.status(400).json({
+      message: "Employee does not exist",
+    });
+  }
+
+  res.status(200).json(employee);
+});
