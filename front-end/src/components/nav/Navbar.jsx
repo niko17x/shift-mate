@@ -5,11 +5,11 @@ import useFetchLogout from "../../hooks/auth.hooks/useFetchLogout";
 const Navbar = () => {
   const { logout } = useFetchLogout();
 
-  let username, _id;
+  let firstName, _id;
 
   try {
     const isUserLoggedIn = JSON.parse(localStorage.getItem("user") ?? "{}");
-    ({ username, _id } = isUserLoggedIn);
+    ({ firstName, _id } = isUserLoggedIn);
   } catch (error) {
     console.error("Failed to parse user data:", error);
   }
@@ -48,16 +48,16 @@ const Navbar = () => {
                 Scheduler
               </Link>
               <Link className="navbar-item" to={"/create-employee"}>
-                Create Employee
+                Manage Employees
               </Link>
             </div>
           </div>
         </div>
 
-        {username ? (
+        {firstName ? (
           <div className="navbar-item has-dropdown is-hoverable">
             <div className="navbar-link">
-              <Link className="navbar-item">{username}</Link>
+              <Link className="navbar-item">{firstName}</Link>
             </div>
             <div className="navbar-dropdown">
               <Link className="navbar-item" to={`/profile/${_id}`}>

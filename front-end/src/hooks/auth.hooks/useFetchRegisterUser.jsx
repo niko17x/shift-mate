@@ -24,8 +24,8 @@ const useFetchRegisterUser = () => {
         return false;
       }
 
-      const { _id, username } = data.user;
-      dispatch({ type: "LOGIN", payload: { _id, username } });
+      const { _id, firstName } = data.user;
+      dispatch({ type: "LOGIN", payload: { _id, firstName } });
 
       return true;
     } catch (error) {

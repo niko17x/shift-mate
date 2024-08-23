@@ -26,13 +26,13 @@ const useFetchLoginuser = () => {
 
       if (!response.ok) {
         setError(data.message || "Login failed. Please try again.");
-        console.log(data.message);
         return false;
       }
 
+      const { _id, firstName } = data.user;
       dispatch({
         type: "LOGIN",
-        payload: { _id: data.user._id, username: data.user.username },
+        payload: { _id, firstName },
       });
       return true;
     } catch (err) {
