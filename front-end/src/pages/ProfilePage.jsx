@@ -102,20 +102,6 @@ const ProfilePage = () => {
           </div>
 
           <div className="field">
-            <label className="label">Username</label>
-            <div className="control">
-              <input
-                className={`input`}
-                type="text"
-                placeholder="johnDoe01"
-                value={profileDataForm.username}
-                name="username"
-                onChange={handleFormData}
-              />
-            </div>
-          </div>
-
-          <div className="field">
             <label className="label">Email</label>
             <div className="control has-icons-right">
               <input

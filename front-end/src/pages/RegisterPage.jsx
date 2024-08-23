@@ -47,8 +47,6 @@ const RegisterPage = () => {
 
     const isRegisterSuccess = await registerUser(formData);
 
-    console.log(formData);
-
     if (isRegisterSuccess) {
       toast.success("Registration successful", {
         toastId: "register-user-success",
