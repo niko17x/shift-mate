@@ -6,7 +6,7 @@ const useFetchLoginuser = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const loginUser = async (username, password) => {
+  const loginUser = async (email, password) => {
     setIsLoading(true);
     setError(null);
 
@@ -17,7 +17,7 @@ const useFetchLoginuser = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username,
+          email,
           password,
         }),
       });

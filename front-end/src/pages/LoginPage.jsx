@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useFetchLoginUser from "../hooks/auth.hooks/useFetchLoginUser";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const { loginUser } = useFetchLoginUser();
@@ -13,14 +13,14 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!username || !password) {
+    if (!email || !password) {
       toast.error("Please fill in all fields", {
         toastId: "login-empty-fields",
       });
       return;
     }
 
-    const isLoggedIn = await loginUser(username, password);
+    const isLoggedIn = await loginUser(email, password);
 
     if (isLoggedIn) {
       toast.success("Logged in successfully", {
@@ -42,7 +42,7 @@ const LoginPage = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label className="label">Username</label>
+          <label className="label">Email</label>
           <div className="control">
             <input
               className="input"
@@ -50,8 +50,8 @@ const LoginPage = () => {
               placeholder="johnDoe01"
               name="username"
               // required={true}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
         </div>
