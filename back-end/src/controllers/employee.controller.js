@@ -101,9 +101,7 @@ export const getAllEmployees = asyncHandler(async (req, res) => {
   const allEmployees = await Employee.find();
 
   if (allEmployees.length === 0) {
-    return res
-      .status(200)
-      .json({ message: "There are no employees available" });
+    return res.status(200).json([]);
   }
 
   res.status(200).json(allEmployees);
@@ -124,7 +122,6 @@ export const deleteEmployee = asyncHandler(async (req, res) => {
 });
 
 export const employeeProfile = asyncHandler(async (req, res) => {
-  console.log("first");
   const employee = await Employee.findOne({ _id: req.params.id });
 
   console.log(employee);
