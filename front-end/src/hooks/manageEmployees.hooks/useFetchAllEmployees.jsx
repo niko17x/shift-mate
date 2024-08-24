@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const useFetchAllEmployees = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [employees, setEmployees] = useState([]);
+  const [data, setData] = useState([]);
   const [error, setError] = useState(null);
 
   const fetchAllEmployees = async () => {
@@ -23,8 +23,8 @@ const useFetchAllEmployees = () => {
         throw new Error("There was an issue with the server");
       }
 
-      setEmployees(data);
-      return { data };
+      setData(data);
+      return data || [];
     } catch (error) {
       setError(
         error.message || "An error occurred while fetching all employees"
@@ -34,7 +34,7 @@ const useFetchAllEmployees = () => {
     }
   };
 
-  return { isLoading, fetchAllEmployees, employees, error };
+  return { isLoading, fetchAllEmployees, data, error };
 };
 
 export default useFetchAllEmployees;
