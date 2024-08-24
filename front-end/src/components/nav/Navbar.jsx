@@ -47,7 +47,7 @@ const Navbar = () => {
               <Link className="navbar-item" to={"/scheduler"}>
                 Scheduler
               </Link>
-              <Link className="navbar-item" to={"/create-employee"}>
+              <Link className="navbar-item" to={"/manage-employees"}>
                 Manage Employees
               </Link>
             </div>
