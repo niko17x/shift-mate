@@ -19,6 +19,13 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import UserProvider from "./context/UserContext.jsx";
 import { AuthContextProvider } from "./context/AuthContext.jsx";
 import ManageEmployeesPage from "./pages/ManageEmployeesPage.jsx";
+import ProtectedRoute from "./components/auth/ProtectedRoute.jsx";
+
+const protectedRoutes = [
+  { path: "/scheduler", element: <SchedulerPage /> },
+  { path: "/manage-employees", element: <ManageEmployeesPage /> },
+  { path: "/profile/:id", element: <ProfilePage /> },
+];
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,9 +33,13 @@ const router = createBrowserRouter(
       <Route index element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/scheduler" element={<SchedulerPage />} />
-      <Route path="/manage-employees" element={<ManageEmployeesPage />} />
-      <Route path="/profile/:id" element={<ProfilePage />} />
+      {protectedRoutes.map(({ path, element }) => (
+        <Route
+          key={path}
+          path={path}
+          element={<ProtectedRoute>{element}</ProtectedRoute>}
+        />
+      ))}
     </Route>
   )
 );
