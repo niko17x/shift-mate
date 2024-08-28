@@ -98,7 +98,13 @@ export const createEmployee = [
 ];
 
 export const getAllEmployees = asyncHandler(async (req, res) => {
-  const allEmployees = await Employee.find();
+  const { sortBy, order } = req.query;
+
+  const sortOptions = {};
+  sortOptions[sortBy] = order === "asc" ? 1 : -1;
+  const allEmployees = await Employee.find().sort(sortOptions);
+
+  // const allEmployees = await Employee.find().sort({ firstName: 1 });
 
   if (allEmployees.length === 0) {
     return res.status(200).json([]);
