@@ -1,6 +1,6 @@
 import { useState } from "react";
-import DisplayEmployees from "../components/manageEmployeePage/DisplayEmployees";
 import EmployeeProfile from "../components/manageEmployeePage/EmployeeProfile";
+import DisplayEmployeeList from "../components/manageEmployeePage/DisplayEmployeeList";
 
 const ManageEmployeesPage = () => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
@@ -13,7 +13,7 @@ const ManageEmployeesPage = () => {
     <div className="manage-employees-page box">
       <div className="edit-employee-profile">
         <EmployeeProfile selectedEmployeeId={selectedEmployeeId} />
-        <DisplayEmployees selectEmployeeId={handleSelectEmployeeId} />
+        <DisplayEmployeeList selectEmployeeId={handleSelectEmployeeId} />
       </div>
     </div>
   );
