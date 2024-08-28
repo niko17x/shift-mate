@@ -1,38 +1,42 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 const useFetchAllEmployees = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
 
-  const fetchAllEmployees = async () => {
+  const fetchAllEmployees = useCallback(async (sortBy, order) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch("api/employee/all-employees", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `/api/employee/all-employees?sortBy=${sortBy}&order=${order}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const data = await response.json();
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error("There was an issue with the server");
+        throw new Error(result.message || "There was an issue with the server");
       }
 
-      setData(data);
-      return data || [];
+      setData(result);
+      return result;
     } catch (error) {
       setError(
         error.message || "An error occurred while fetching all employees"
       );
+      return null; // Ensuring consistent return value in case of error
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   return { isLoading, fetchAllEmployees, data, error };
 };
