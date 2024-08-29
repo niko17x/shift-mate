@@ -8,10 +8,10 @@ import FilterEmployeeList from "./FilterEmployeeList";
 
 const DisplayEmployeeList = ({ selectEmployeeId }) => {
   const [employeeList, setEmployeeList] = useState([]);
-  const [filterKey, setFilterKey] = useState("updatedAt-asc");
+  const [filterKey, setFilterKey] = useState("updatedAt-desc");
   const [filterBy, setFilterBy] = useState({
     sortBy: "updatedAt",
-    order: "asc",
+    order: "desc",
   });
   const { isLoading: isLoadingEmployees, fetchAllEmployees } =
     useFetchAllEmployees();
@@ -31,7 +31,7 @@ const DisplayEmployeeList = ({ selectEmployeeId }) => {
       }
     };
     getEmployees();
-  }, [filterBy]);
+  }, [filterBy, selectEmployeeId]);
 
   const handleFiltering = useCallback((filter, selectedKey) => {
     setFilterBy(filter);
