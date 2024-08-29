@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import handleRegisterInputErrors from "../../utils/handleRegisterInputErrors";
 import useFetchCreateEmployee from "../../hooks/manageEmployees.hooks/useFetchCreateEmployee";
 
-const CreateEmployeeForm = ({ selectEmployeeId }) => {
+const CreateEmployeeForm = ({ setSelectedEmployeeId }) => {
   const [toggleModal, setToggleModal] = useState(null);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -41,7 +41,7 @@ const CreateEmployeeForm = ({ selectEmployeeId }) => {
       return;
     }
 
-    selectEmployeeId(result.data.employee._id);
+    setSelectedEmployeeId(result.data.employee._id);
     toast.success("Employee created successfully", {
       toastId: "create-employee-success",
     });

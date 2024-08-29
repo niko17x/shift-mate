@@ -6,7 +6,7 @@ import useFetchDeleteEmployee from "../../hooks/manageEmployees.hooks/useFetchDe
 import CreateEmployeeForm from "./AddEmployeeForm";
 import FilterEmployeeList from "./FilterEmployeeList";
 
-const DisplayEmployeeList = ({ selectEmployeeId }) => {
+const DisplayEmployeeList = ({ setSelectedEmployeeId, selectedEmployeeId }) => {
   const [employeeList, setEmployeeList] = useState([]);
   const [filterKey, setFilterKey] = useState("updatedAt-desc");
   const [filterBy, setFilterBy] = useState({
@@ -19,8 +19,9 @@ const DisplayEmployeeList = ({ selectEmployeeId }) => {
     isLoading: isDeleting,
     error: errorDeleting,
     deleteEmployee,
-    data,
   } = useFetchDeleteEmployee();
+
+  console.log(selectedEmployeeId);
 
   useEffect(() => {
     const getEmployees = async () => {
@@ -31,7 +32,7 @@ const DisplayEmployeeList = ({ selectEmployeeId }) => {
       }
     };
     getEmployees();
-  }, [filterBy, selectEmployeeId]);
+  }, [filterBy, selectedEmployeeId]);
 
   const handleFiltering = useCallback((filter, selectedKey) => {
     setFilterBy(filter);
@@ -48,6 +49,7 @@ const DisplayEmployeeList = ({ selectEmployeeId }) => {
       return;
     }
 
+    setSelectedEmployeeId(null);
     toast.success("Employee successfully deleted", {
       toastId: "delete-employee-success",
     });
@@ -61,7 +63,7 @@ const DisplayEmployeeList = ({ selectEmployeeId }) => {
     <div className="display-employees box">
       <p className="title is-2">Employee List</p>
 
-      <CreateEmployeeForm selectEmployeeId={selectEmployeeId} />
+      <CreateEmployeeForm setSelectedEmployeeId={setSelectedEmployeeId} />
       <FilterEmployeeList
         handleFiltering={handleFiltering}
         filterKey={filterKey}
@@ -72,7 +74,7 @@ const DisplayEmployeeList = ({ selectEmployeeId }) => {
           <div className="employee-list" key={emp._id}>
             <div
               className="notification"
-              onClick={() => selectEmployeeId(emp._id)}
+              onClick={() => setSelectedEmployeeId(emp._id)}
             >
               <button
                 className="delete"

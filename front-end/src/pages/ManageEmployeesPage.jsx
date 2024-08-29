@@ -9,11 +9,16 @@ const ManageEmployeesPage = () => {
     setSelectedEmployeeId(id);
   };
 
+  // console.log(selectedEmployeeId);
+
   return (
     <div className="manage-employees-page box">
       <div className="edit-employee-profile">
         <EmployeeProfile selectedEmployeeId={selectedEmployeeId} />
-        <DisplayEmployeeList selectEmployeeId={handleSelectEmployeeId} />
+        <DisplayEmployeeList
+          setSelectedEmployeeId={handleSelectEmployeeId}
+          selectedEmployeeId={selectedEmployeeId}
+        />
       </div>
     </div>
   );
