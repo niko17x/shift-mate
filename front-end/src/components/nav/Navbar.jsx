@@ -42,7 +42,7 @@ const Navbar = () => {
           <Link className="navbar-item">About</Link>
 
           <div className="navbar-item has-dropdown is-hoverable">
-            <Link className="navbar-link">Tools</Link>
+            <div className="navbar-link">Tools</div>
             <div className="navbar-dropdown">
               <Link className="navbar-item" to={"/scheduler"}>
                 Scheduler
