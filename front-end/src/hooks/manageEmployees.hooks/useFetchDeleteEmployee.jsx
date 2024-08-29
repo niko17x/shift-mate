@@ -25,6 +25,7 @@ const useFetchDeleteEmployee = () => {
       const result = await response.json();
       setIsLoading(false);
       setData(result);
+      return true;
     } catch (error) {
       setError(error.message || "An unexpected error occurred");
       setData(null);
