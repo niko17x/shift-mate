@@ -1,46 +1,18 @@
 import asyncHandler from "express-async-handler";
 import Schedule from "../models/schedule.model.js";
 
-export const getEmployeeSchedule = asyncHandler(async (req, res) => {
-  const { employeeId } = req.body;
-  const schedule = await Schedule.findOne({
-    employeeId,
-  })
-    .lean()
-    .exec();
-  // const schedule = await Schedule.findOne({
-  //   "employees.employee": "6675a14854e81afa1b9b3ced",
-  // })
-  //   .lean()
-  //   .exec();
-
-  if (!schedule) {
-    throw new Error("No schedules found");
-  }
-
-  const employeeSchedule = schedule.employees.find(
-    (e) => e.employee.toString() === employeeId.toString()
-  );
-
-  res.status(200).json({
-    message: "Retrieved employee schedule successfully",
-    employeeSchedule,
-  });
-});
-
 // Create schedule for a single date:
 export const createSchedule = asyncHandler(async (req, res) => {
   const { employeeId, weekNum, year, date, startTime, endTime, notes } =
     req.body;
 
-  const existingSchedule = await Schedule.findOne({
+  const schedule = await Schedule.findOne({
     employee: employeeId,
-    // "schedules.date": date,
     weekNum,
     year,
   });
 
-  if (existingSchedule) {
+  if (schedule) {
     return res.status(400).json({
       message: `Schedule for employee on ${date} already exists`,
       origin: "Server Error: createSchedule",
@@ -78,22 +50,24 @@ export const createShift = asyncHandler(async (req, res) => {
   const { employeeId, year, weekNum, date, startTime, endTime, notes } =
     req.body;
 
-  const existingSchedule = await Schedule.findOne({
+  const schedule = await Schedule.findOne({
     employee: employeeId,
     year,
     weekNum,
   });
 
-  if (!existingSchedule) {
+  if (!schedule) {
     return res.status(404).json({
       message: "Schedule does not exist. Please create schedule for employee",
       origin: "Server => createShift function",
     });
   }
 
-  const existingShift = existingSchedule.shifts.find(
-    (shift) => shift.date.toISOString().split("T")[0] === date.toString()
-  );
+  const existingShift = schedule.shifts
+    .find((shift) => shift.date.toISOString().split("T")[0] === date.toString())
+    .sort((a, b) => a.date - b.date);
+
+  // schedule.shifts.sort((a, b) => a.date - b.date);
 
   if (existingShift) {
     existingShift.date = date;
@@ -108,10 +82,10 @@ export const createShift = asyncHandler(async (req, res) => {
       notes,
     };
 
-    existingSchedule.shifts.push(newShift);
+    schedule.shifts.push(newShift);
   }
 
-  const updatedSchedule = await existingSchedule.save();
+  const updatedSchedule = await schedule.save();
 
   res.status(200).json({
     message: "Shift successfully updated",
@@ -182,11 +156,34 @@ export const scheduledEmployees = asyncHandler(async (req, res) => {
 });
 
 export const getScheduledEmployees = asyncHandler(async (req, res) => {
-  const { year, weekNum, employeeId } = req.body;
+  console.log("server");
+  const { employeeId, year, weekNum } = req.query;
 
-  const foo = await Schedule.find({ weekNum });
+  console.log(employeeId, year, weekNum);
 
-  res.status(200).json(foo);
+  // First => Get all employees with matching employeeId, year, weekNum:
+  const schedule = await Schedule.findOne({
+    employee: employeeId,
+    year,
+    weekNum,
+  });
+
+  if (!schedule) {
+    return res.status(404).json({
+      message: "Employee schedule does not exist",
+      origin: "Server => getScheduledEmployees function",
+    });
+  }
+
+  schedule.shifts.sort((a, b) => a.date - b.date);
+
+  const updatedSchedule = await schedule.save();
+
+  res.status(200).json(updatedSchedule);
+
+  // query for employee schedules matching employee, year and weekNum.
+  // then query for shifts with matching dates.
+  // push all schedules into an array for client access.
 });
 
 /**

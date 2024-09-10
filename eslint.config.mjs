@@ -8,6 +8,10 @@ export default [
   pluginJs.configs.recommended,
   pluginReact.configs.flat.recommended,
   {
-    rules: { "react/jsx-uses-react": "off", "react/react-in-jsx-scope": "off" },
+    rules: {
+      "react/jsx-uses-react": "off",
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+    },
   },
 ];
