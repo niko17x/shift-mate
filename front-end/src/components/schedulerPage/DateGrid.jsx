@@ -1,8 +1,6 @@
-import React from "react";
-
-const CreateGrid = ({ data }) => {
+const DateGrid = ({ data }) => {
   // Create an array of 21 items (7 columns * 3 rows) filled with null
-  const gridItems = new Array(16).fill(null);
+  const gridItems = new Array(8).fill(null);
 
   // Insert the data into the first 7 positions
   for (let i = 0; i < 7; i++) {
@@ -10,7 +8,7 @@ const CreateGrid = ({ data }) => {
   }
 
   return (
-    <div className="grid-container">
+    <div className="grid-sub-container">
       {gridItems.map((item, index) => (
         <div key={index} className="grid-item">
           {item ? (
@@ -28,6 +26,6 @@ const CreateGrid = ({ data }) => {
   );
 };
 
-export default CreateGrid;
+export default DateGrid;
 
 // TODO => GRID DATES HAVE BEEN IMPLEMENTED NOW. MAKE THIS CURRENT CREATEGRID FUNCTION ADAPTABLE FOR EMPLOYEE DATA ADDITION.

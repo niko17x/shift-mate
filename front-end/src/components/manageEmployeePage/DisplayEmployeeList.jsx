@@ -21,8 +21,6 @@ const DisplayEmployeeList = ({ setSelectedEmployeeId, selectedEmployeeId }) => {
     deleteEmployee,
   } = useFetchDeleteEmployee();
 
-  console.log(selectedEmployeeId);
-
   useEffect(() => {
     const getEmployees = async () => {
       const { sortBy, order } = filterBy;

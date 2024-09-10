@@ -1,5 +1,3 @@
-import React from "react";
-
 const ErrorFallback = ({ error, resetErrorBoundary }) => (
   <div role="alert">
     <p>Something went wrong:</p>

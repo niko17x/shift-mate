@@ -1,22 +1,13 @@
-import React from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import useSelectedDate from "../../hooks/calendar/useSelectedDate";
-import DisplayDates from "../schedulerPage/DisplayDates";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-const MyCalendar = () => {
-  const { date, handleDateChange } = useSelectedDate();
-
-  // DisplayDates(date, 22);
-
+const CalendarUi = () => {
   return (
-    <div className="calendar-ui">
-      <Calendar
-        onChange={handleDateChange}
-        value={date ? new Date(date) : null}
-      />
-    </div>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DatePicker />
+    </LocalizationProvider>
   );
 };
 
-export default MyCalendar;
+export default CalendarUi;

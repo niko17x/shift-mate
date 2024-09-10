@@ -13,6 +13,11 @@
   --primary-green: rgb(66, 247, 205);
 }
 
+// General styles:
+.divider {
+  border: 1px solid white;
+}
+
 /* Container for the dates */
 .display-dates {
   width: 80%;
@@ -23,14 +28,26 @@
 }
 
 .grid-container {
-  width: 100%;
-  display: grid;
-  place-content: center;
-  margin-top: 70px;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 5px;
+  // width: 100%;
+  // display: grid;
+  // grid-template-columns: 1fr 1fr;
+
+  // place-content: center;
+  // margin-top: 70px;
+  // grid-template-columns: repeat(8, 1fr);
+  // grid-template-rows: repeat(3, 1fr);
+  // gap: 5px;
   // border: 1px solid yellow;
+
+  .grid-sub-container {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+
+    .grid-item {
+      width: 8.5rem;
+      height: 8rem;
+    }
+  }
 
   .date-grouped {
     display: flex;
@@ -46,4 +63,19 @@
   padding: 20px;
   font-size: 1rem;
   width: 8rem;
+}
+
+.manage-employees-page {
+  display: grid;
+  .edit-employee-profile {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 15px;
+  }
+
+  .display-employees {
+    .employee-list {
+      margin-bottom: 20px;
+    }
+  }
 }

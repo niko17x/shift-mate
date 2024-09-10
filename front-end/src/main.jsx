@@ -19,6 +19,7 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import UserProvider from "./context/UserContext.jsx";
 import { AuthContextProvider } from "./context/AuthContext.jsx";
 import ManageEmployeesPage from "./pages/ManageEmployeesPage.jsx";
+import TestingPage from "./pages/TestingPage.jsx";
 import ProtectedRoute from "./components/auth/ProtectedRoute.jsx";
 
 const protectedRoutes = [
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
       <Route index element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/testing-page" element={<TestingPage />} />
       {protectedRoutes.map(({ path, element }) => (
         <Route
           key={path}

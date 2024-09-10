@@ -1,4 +1,3 @@
-import React from "react";
 import Hero from "../components/homePage/hero.jsx";
 
 const HomePage = () => {
